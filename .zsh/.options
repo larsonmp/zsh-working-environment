@@ -1,0 +1,91 @@
+################################################################################
+#FILE:         .options
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#DEPENDENCIES: None
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ------------------------------------------------
+#  0.1.0.0  2010.03.26  MPL     Basic functionality complete.
+#  1.0.0.0  2011.03.30  MPL     Documentation updated.
+#  1.0.1.0  2011.06.06  MPL     Added NO_LIST_BEEP.
+#  1.0.1.1  2011.11.05  MPL     Removed redundant history-related options.
+#
+#===============================================================================
+#NOTES:
+#
+#
+################################################################################
+
+# If a command is not in the has table, and there exists an executable
+# directory by that name, perform the "cd" command to that directory
+setopt AUTO_CD
+
+# Automatically list choices on an ambiguous completion
+setopt AUTO_LIST
+
+# If a parameter is completed whose content is the name of a directory, then
+# add a trailing slash
+setopt AUTO_PARAM_SLASH
+
+# Make "cd" push the old directory onto the directory stack (silently), and
+# ignore duplicate entries; have pushd with no arguments act like pushd $HOME
+setopt AUTO_PUSHD PUSHD_SILENT PUSHD_IGNORE_DUPS PUSHD_TO_HOME
+
+# Treat single word simple commands without redirection as candidates
+# for resumption of an existing job
+setopt AUTO_RESUME
+
+# Attempt to correct spelling mistakes in commands
+setopt CORRECT
+
+# Attempt to correct spelling mistakes in the whole line
+#setopt CORRECT_ALL #a little annoying -- corrects intentional name changes
+
+# Treat the "#", "~" and "^" characters as part of patterns for filename
+# generation, etc.
+setopt EXTENDED_GLOB
+
+# Put timestamps in history, and turn on hashing
+setopt EXTENDED_HISTORY HASH_CMDS
+
+# Do not enter command lines into the history list if they are duplicates of
+# the previous event, or any event, or if they begin with a blank
+setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE
+
+# When searching for history entries in the line editor, do not display
+# duplicates of a line previously found, even if the duplicates are not
+# contiguous.  Similarly, when writing out the history file, older
+# commands that duplicate newer ones are omitted.
+setopt HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS
+
+# Import new commands from the history file, and append typed commands
+# to the history file
+setopt SHARE_HISTORY
+
+# On an ambiguous completion, insert the first match immediately
+#setopt MENU_COMPLETE
+
+# Report the status of background jobs immediately
+setopt NOTIFY
+
+# Do not require a leading "." in a filename to be matched explicitly
+setopt GLOB_DOTS
+
+# List jobs in the long format by default
+setopt LONG_LIST_JOBS
+
+# Don't overwrite a file when using ">" (use ">!" to overwrite)
+setopt NO_CLOBBER
+
+# Stop it! Stop whining!
+setopt NO_HIST_BEEP NO_LIST_BEEP
+
+# In completion, recognize exact matches even if they are ambiguous
+setopt REC_EXACT
+
+# Sourcing files may not work without this
+setopt NO_FUNCTION_ARG_ZERO
+

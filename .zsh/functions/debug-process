@@ -1,0 +1,8 @@
+if (( ${#jobstates} )); then
+  current_job=${(k)jobstates[(r)*:+:*]}
+  pid=${${jobstates[${current_job}]}//[^0-9]/}
+  exe=${jobtexts[${current_job}]// */}
+  
+  xterm -e "gdb $exe $pid" #pause this thread while debugging
+  fg %${current_job} #resume (bring to foreground)
+fi

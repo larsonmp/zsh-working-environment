@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="common" default="info" basedir=".">
+  <description>Common build tasks.</description>
+  
+  <!-- general build properties -->
+  <property file="${basedir}/build.properties" />
+  
+  <!-- utility targets -->
+  <target name="info" depends="init" description="Print general information about the build configuration.">
+    <echo message="Project:      ${ant.project.name} (${basedir})"                         />
+    <echo message="Build File:   ${ant.file}"                                              />
+    <echo message="Build Time:   ${build.time.pretty}"                                     />
+    <echo message="Build OS:     ${os.name} (Kernel: ${os.version}) on ${os.arch}"         />
+    <echo message="------------- --------------------------------------------------------" />
+    <echo message="User:         ${user.name} (Home: ${user.home})"                        />
+    <echo message="PWD:          ${user.dir}"                                              />
+    <echo message="------------- --------------------------------------------------------" />
+    <echo message="Ant Version:  ${ant.version} (Java ${ant.java.version})" />
+    <echo message="Ant Home:     ${ant.home}"                               />
+    <echo message="------------- --------------------------------------------------------" />
+    <echo message="Java Version: ${java.version}"                                          />
+    <echo message="Java Vendor:  ${java.vendor} (${java.vendor.url})"                      />
+    <echo message="Java Home:    ${java.home}"                                             />
+    <echo message="Class-Path:   ${java.class.path}"                                       />
+    <!--
+        Other properties, some of which don't work with ws_ant.sh:
+          ${line.separator}
+          ${file.separator}
+          ${path.separator}
+          ${java.vm.version}
+          ${java.vm.vendor}
+          ${java.vm.name}
+          ${java.vm.specification.version}
+          ${java.vm.specification.vendor}
+          ${java.vm.specification.name}
+          ${java.specification.version}
+          ${java.specification.vendor}
+          ${java.specification.name}
+          ${java.class.version}
+          ${java.ext.dirs}
+          ${ant.home}
+          ${ant.core.lib}
+          ${ant.library.dir}
+          ${ant.project.default-target}
+          ${ant.project.invoked-target}
+    -->
+  </target>
+  
+  <target name="init">
+    <tstamp>
+      <format property="build.time.pretty" pattern="yyyy-MM-dd HH:mm:ss z (Z)" locale="en,US" />
+      <format property="build.time.file" pattern="yyyy-MM-dd_HH.mm.ss" locale="en,US" />
+    </tstamp>
+  </target>
+</project>

@@ -1,0 +1,245 @@
+########################################################################################################################
+#SCRIPT:                        show-info
+#PLATFORMS:                     GNU/Linux
+#AUTHOR(s):                     Larson, MP
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ----------------------------------------------------------------------------------------
+#  0.1.0.0  2012.12.23  MPL     Split from ${Z_HOME}/.functions.
+#
+########################################################################################################################
+
+########################################################################################################################
+# OPTIONS
+
+setopt FUNCTION_ARGZERO
+autoload -U colors && colors
+
+########################################################################################################################
+# FUNCTIONS
+
+##
+# Print help text and set return code.
+#
+# @param exe_path the path of the enclosing script
+# @env verbose enable verbose output
+#
+print_help() {
+  local executable="$1"
+  print "${executable##*/}: help"
+  
+  cat << EOF | cut -c3- | sed "s:EXE_NAME:${executable##*/}:"
+    Displays information about the attributes of the system, environment, user, etc.
+  
+    Usage:
+      EXE_NAME {-chlv} [category ...]
+  
+    Available options:
+      -c
+          Enable colorized output.
+      
+      -h
+          Displays this help text.
+      
+      -l
+          List categories and exit.
+      
+      -v
+          Enable verbose output.
+    
+    Available categories:
+      all
+          Display all categories except "welcome"
+      
+      general
+          Display general information, including host, platform, and user information
+      
+      path
+          Display path information in an easy-to-read format
+      
+      platform
+          Display platform/architecture information
+      
+      stats
+          Display usage statistics
+      
+      user
+          Display information about the current user
+      
+      version
+          Display version information for OS and various developer tools
+      
+      welcome
+          Display a summary of information for display on login
+      
+    Examples:
+      EXE_NAME -cv all            #verbosely display all categories with color
+  
+      EXE_NAME -l                 #list available categories
+EOF
+}
+
+show_all() {
+  print    "================================================================================"
+  show_date
+  print -- "--------------------------------------------------------------------------------"
+  show_platform
+  print -- "--------------------------------------------------------------------------------"
+  show_version
+  print -- "--------------------------------------------------------------------------------"
+  show_host
+  print -- "--------------------------------------------------------------------------------"
+  show_user
+  print -- "--------------------------------------------------------------------------------"
+  verbose= show_path
+  print -- "--------------------------------------------------------------------------------"
+  verbose= show_stats
+  print    "================================================================================"
+
+}
+
+##
+# Display date information (no command-line arg for this one)
+#
+show_date() {
+  local dt="$(date +%s)"
+  local dt_lcl="$(date  -d @${dt} +'%Y-%m-%d %H:%M:%S%:z (%Z)')"
+  local dt_utc="$(date -ud @${dt} +'%Y-%m-%d %H:%M:%SZ      (%Z)')"
+  
+  print "${main_color}Date${reset_color}:        ${dt_lcl}\n             ${dt_utc}"
+}
+
+##
+# Display general information
+#
+show_general() {
+  print    "================================================================================"
+  show_date
+  print -- "--------------------------------------------------------------------------------"
+  show_platform
+  print -- "--------------------------------------------------------------------------------"
+  show_host
+  print -- "--------------------------------------------------------------------------------"
+  show_user
+  print    "================================================================================"
+}
+
+##
+# Display host information (address, name, uptime)
+#
+show_host() {
+  print "${main_color}Host${reset_color}:        ${HOST}"
+  print "${main_color}IP Address${reset_color}:  ${ADDR}"
+  print "${main_color}Uptime${reset_color}:      $(uptime | sed 's/.*up \(.*\),.*user.*$/\1/')"
+}
+
+##
+# Display path information in easy-to-read form
+#
+# @env colorize enable color output (see ls)
+#
+show_path() {
+  local sed_cmd_1='s:[ ]+:\t:g'         #convert spaces to tabs
+  local sed_cmd_2='s/[[:blank:]]/    /' #convert first tab in line back to spaces
+  local sed_cmd_3='/->/ s/([^[:blank:]]+)[[:blank:]]+->[[:blank:]]+([^[:blank:]]+)/\1 -> \2/'
+  local color_arg="${colorize+--color=always}"
+  
+  (( ${+verbose} )) && print "${main_color}Path${reset_color}:"
+  for entry in ${path}; do
+    print "$(ls -ld ${entry} ${color_arg} | sed -r ${sed_cmd_1} | cut -f1,3,9- | sed -r -e ${sed_cmd_2} -e ${sed_cmd_3} | tr -d '\n')"
+  done | nl -w4 -s"| "
+}
+
+##
+# Display platform/architecture information
+#
+show_platform() {
+  print "${main_color}Platform${reset_color}:    ${OS} (${KERNEL}) on ${CPUTYPE}"
+  print "${main_color}OS${reset_color}:          $(cat /etc/redhat-release)"
+}
+
+##
+# Display version information for OS and various developer tools
+#
+show_version() {
+  print "${main_color}RedHat${reset_color}:      $(cat /etc/redhat-release | egrep -o '[0-9.]+')"
+  print "${main_color}zsh${reset_color}:         ${ZSH_VERSION}"
+  print "${main_color}GCC${reset_color}:         $(gcc --version | awk '/gcc/ {print $3}')"
+  print "${main_color}Java${reset_color}:        $(java -version |& awk '/java version/ {print $3}' | sed 's:"::g')"
+  print "${main_color}Python${reset_color}:      $(python -V |& awk '{print $2}')"
+  print "${main_color}Ruby${reset_color}:        $(ruby -v |& awk '{print $2}')"
+  print "${main_color}Perl${reset_color}:        $(perl -v |& awk '/is perl/ {print $4}' | cut -c2-)"
+  print "${main_color}Ant${reset_color}:         $(ant -version |& awk '{print $4}')"
+  print "${main_color}gVim${reset_color}:        $(=gvim  --version | head -1 | awk '{print $5}')"
+  print "${main_color}emacs${reset_color}:       $(=emacs --version | head -1 | awk '{print $NF}')"
+  print "${main_color}Firefox${reset_color}:     $(firefox --version     | awk '{print $3}' | egrep -o '[0-9.]+')"
+  print "${main_color}Thunderbird${reset_color}: $(thunderbird --version | awk '{print $2}' | egrep -o '[0-9.]+')"
+}
+
+##
+# Display usage statistics
+#
+show_stats() {
+  (( ${+verbose} )) && print "${main_color}Usage Statistics${reset_color}:"
+  local awk_arg='{CMD[$2]++; count++} END {for (x in CMD) printf "%4d %5.2f%% %s\n", CMD[x], CMD[x]/count*100, x}'
+  history 1 | awk ${awk_arg} | grep -v "./" | sort -nr | nl -w4 -s"| " | head -n20
+}
+
+##
+# Display information about the current user
+#
+show_user() {
+  print "${main_color}Username${reset_color}:    [uID: $UID] $USERNAME"
+  print "${main_color}Groups${reset_color}:      [gID: $GID] $GROUPS"
+  print "${main_color}Shell${reset_color}:       ${ZSH_NAME} ${ZSH_VERSION}"
+}
+
+##
+# Display a summary of information for display (for login sessions)
+#
+show_welcome() {
+  print "${main_color}Welcome to ${reset_color}${alt_color}${HOST}${reset_color}"
+  print "${main_color}Date${reset_color}:       $(date +'%Y-%m-%d %H:%M:%S')"
+  print "${main_color}Platform${reset_color}:   ${OS} (${KERNEL}) on ${CPUTYPE}"
+  print "${main_color}Uptime${reset_color}:     $(uptime | sed 's/.*up \(.*\),.*user.*$/\1/')"
+  print "${main_color}IP Address${reset_color}: ${ADDR}"
+}
+
+########################################################################################################################
+# VARIABLES, PROPERTIES, etc.
+
+categories=(all general host path platform stats user version welcome)
+
+########################################################################################################################
+# ARGUMENT HANDLING
+
+while getopts "chlv" option; do
+  case "$option" in
+     c) typeset -r colorize;;
+     h) print_help show-info; return 0;;
+     l) print ${categories}; return 0;;
+     v) typeset -r verbose;;
+     *) print_help show-info; return 1;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+########################################################################################################################
+# MAIN FUNCTION
+
+if (( ${+colorize} )); then
+  local -r main_color=${MAIN_COLOR:=${fg[blue]}}
+  local -r alt_color=${ALT_COLOR:=${fg[cyan]}}
+fi
+
+for arg in "$@"; do
+  if (( ${+categories[(r)$arg]} )); then
+    show_${arg}
+  else
+    print -u 2 "show-info: invalid category: $arg"
+  fi
+done
+

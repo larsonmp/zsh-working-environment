@@ -1,0 +1,63 @@
+#!/bin/zsh
+
+################################################################################
+#FILE:         .zhelp
+#PLATFORMS:    GNU/Linux
+#HOSTS:        bc05-wks023
+#AUTHOR(s):    Larson, MP
+#DEPENDENCIES: None
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ----------------------------------------
+#  0.1.0.0  2010.08.18  MPL     Basic functionality complete.
+#
+#===============================================================================
+#NOTES:
+#
+#
+################################################################################
+
+autoload -U colors && colors
+
+less -R << ENDCAT
+${color[bold]}Congratulations, you're using a top-knotch zshrc.${reset_color}
+
+${color[bold]}I. Files${reset_color}
+  1) ${color[underline]}.zshrc${reset_color}: Configures ZSH options, tab-completion, environment
+     variables, and the prompt. Invoked at startup of interactive
+     shells (?).
+     
+     Dependencies: .alias .colors .path .functions
+  
+  2) ${color[underline]}.zprofile${reset_color}: Configures xhost, xrdb.  Invoked at system
+     startup (?).
+     
+     Dependencies: None
+  
+  3) ${color[underline]}.alias${reset_color}: Configures aliases.  Invoked by .zshrc.
+     
+     Dependencies: .functions
+  
+  4) ${color[underline]}.path${reset_color}: Configures \$PATH variable.  Invoked by .zshrc.
+     
+     Dependencies: .functions
+  
+  5) ${color[underline]}.functions${reset_color}: Configures ZSH functions.  Invoked by .zshrc.
+     
+     Dependencies: None
+  
+  6) ${color[underline]}.help${reset_color}: Displays help information.  Invoked by typing
+     ${fg[red]}shelp${reset_color} at the command line.
+     
+     Dependencies: None
+
+${color[bold]}II. Functions${reset_color}
+  1) Type ${fg[red]}gshark${reset_color} at the command line to bring up a ${fg[green]}gvim${reset_color}
+     session with ${color[underline]}.zshrc${reset_color} and supporting files.
+  
+  2) Type ${fg[red]}gdot${reset_color} at the command line to bring up a ${fg[green]}gvim${reset_color}
+     session with various configuration files, e.g. ${color[underline]}.Xresources${reset_color}.
+  
+ENDCAT

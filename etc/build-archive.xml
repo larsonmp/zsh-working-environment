@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="archive" default="help" basedir=".">
+  <description>Archive important files for transfer.</description>
+  
+  <!-- common build tasks -->
+  <import file="build-common.xml" />
+  
+  <!-- project properties -->
+  <property name="archive.dir"         value="${user.dir}" />
+  <property name="archive.file"        value="archive.tar.gz" />
+  <property name="archive.compression" value="gzip" /><!-- try bzip2 for smaller files -->
+  
+  <!-- utility targets -->
+  <target name="help" depends="init" description="Display usage information.">
+    <echo message="This project facilitates moving a user's environment by packaging up key files." />
+    <echo message="Targets:" />
+    <echo message="  build: create the archive" />
+    <echo message="  clean: delete the archive" />
+  </target>
+  
+  <!-- project targets -->
+  <target name="build" depends="init" description="Package files into an archive with a .">
+    <tar destfile="${archive.dir}/${archive.file}" excludes="**/*" compression="${archive.compression}">
+      <tarfileset dir="${user.dir}" prefix="${build.time.file}">
+        <include name=".Xresources"/>
+        <include name=".fonts/*"/>
+        <include name=".gdbinit"/>
+        <include name=".pyrc"/>
+        <include name=".screenrc*"/>
+        <include name=".toprc"/>
+        <include name=".vim/colors/*"/>
+        <include name=".vimrc"/>
+        <include name=".zkbd/*"/>
+        <include name=".zprofile"/>
+        <include name=".zshenv"/>
+        <include name=".zshrc"/>
+        <include name=".zsh/.*"/>
+        <include name=".zsh/functions/*"/>
+        <include name=".zsh/network/*"/>
+        <include name="etc/*"/>
+        <include name="lib/python/**/*.py"/>
+        <include name="scripts/*"/>
+        <!-- above are things included, below are things excluded -->
+        <exclude name=".zsh/.history*"/>
+        <exclude name=".zsh/cache"/>
+      </tarfileset>
+    </tar>
+  </target>
+  
+  <target name="clean" description="Remove artifacts (archive, log files, etc.).">
+    <delete>
+      <fileset file="${archive.dir}/${archive.file}" />
+    </delete>
+  </target>
+</project>

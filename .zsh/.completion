@@ -1,0 +1,104 @@
+################################################################################
+#FILE:         .completion
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#DEPENDENCIES: None
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ----------------------------------------
+#  0.1.0.0  2011.02.18  MPL     Basic functionality complete.
+#  1.0.0.0  2011.03.30  MPL     Documentation updated.
+#  1.0.1.0  2012.05.07  MPL     Added completer for source.
+#
+#===============================================================================
+#NOTES:
+#
+#TODO:
+#  (1) write completer for tar -> glob on arg1, append .tar.gz on unambiguous
+#
+################################################################################
+
+# The following line royally screws up completion for svn commands
+autoload -U compinit && compinit
+
+# Allow 1 error for every 5 characters
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/4 )) numeric )'
+
+# Complete 'cd -<TAB>' with menu
+zstyle ':completion:*:*:cd:*:directory-stack:' menu yes select
+
+# Correction
+zstyle ':completion:correct:*' insert-unambiguous true
+zstyle ':completion:correct:*' original           true
+zstyle ':completion:correct:'  prompt 'correct to: %U%e%u'
+
+# Expansion
+zstyle ':completion:*:expand:*' tag-order all-expansions
+
+# Formatting
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+zstyle ':completion:*:corrections'  format '%B%d (errors: %e)%b'
+zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+zstyle ':completion:*:messages'     format '%U%d%u'
+zstyle ':completion:*'              auto-description 'specify %d'
+zstyle ':completion:*:options'      description 'yes' # describe options in full
+zstyle ':completion:*:warnings'     format '%BNo matches for: %d%b'
+
+# Ignoring patterns (commands we don't have, users we don't care about, etc.)
+zstyle ':completion:*:functions' ignored-patterns '_*'
+
+# List of completers to use
+zstyle ':completion:*::::' completer _expand _complete _ignored _approximate
+zstyle ':completion:*'     menu select=1 _complete _ignored _approximate
+
+# Manuals
+zstyle ':completion:*:manuals'   separate-sections true
+zstyle ':completion:*:manuals.*' insert-sections   true
+zstyle ':completion:*:man:*'     menu yes select
+
+# Processes
+zstyle ':completion:*:processes'          command "ps -U $(whoami) -o pid,ppid,command"
+zstyle ':completion:*:kill:*:processes'   force-list always
+zstyle ':completion:*:*:kill:*:processes' menu yes select
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+
+# Prompts
+zstyle ':completion:*' list-prompt   '%SAt [%p]: Hit TAB for more%s'
+zstyle ':completion:*' select-prompt '%SScrolling active: currently at [%p]%s'
+
+# Miscellany
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # match lower to upper
+zstyle ':completion:*:matches' group 'yes'          # group matches
+zstyle ':completion:*' squeeze-slashes true         # remove trailing slashes from dirs
+zstyle ':completion:*' users ${USER}
+
+# History (not sure if this is working)
+zstyle ':completion:*:history-words' list false          # deactivate list
+zstyle ':completion:*:history-words' menu yes            # activate menu
+zstyle ':completion:*:history-words' remove-all-dups yes # ignore duplicates
+zstyle ':completion:*:history-words' stop yes            # ?
+
+# Caching (not sure what this does or if it's working)
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path ~/.zsh/cache/${HOST}
+
+# When sourcing files, offer *.zsh first, then dirs, then globbed files
+zstyle ':completion:*:*:source:*' file-patterns '*.zsh:globbed-files:zsh\ script' \
+                                                '*(-/):directories:directory *.bash::bash\ script' \
+                                                '%p:globbed-files'
+
+# Offer indices before parameters in subscripts (don't know what this means)
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+
+# (not sure what this does)
+zstyle '*' single-ignored show
+
+# SCP/SSH Completion
+zstyle ':completion:*:scp:*' tag-order files users 'hosts:-host hosts:-domain:domain hosts:-ipaddr"IP\ Address *'
+zstyle ':completion:*:scp:*' group-order files all-files users hosts-domain hosts-host hosts-ipaddr
+zstyle ':completion:*:ssh:*' tag-order users 'hosts:-host hosts:-domain:domain hosts:-ipaddr"IP\ Address *'
+zstyle ':completion:*:ssh:*' group-order hosts-domain hosts-host users hosts-ipaddr

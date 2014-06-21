@@ -1,0 +1,8 @@
+read response\?"zsh: correct 'emacs' to 'gvim' [Yna]? "
+
+case "${response}" in
+  n) =emacs $@;;
+  a) return 0;;
+  *) gvim $@;;
+esac
+

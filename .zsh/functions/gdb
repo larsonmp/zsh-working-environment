@@ -1,0 +1,2 @@
+=gdb --version | head -1
+=gdb -silent "$@"

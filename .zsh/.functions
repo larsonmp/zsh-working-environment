@@ -1,0 +1,375 @@
+################################################################################
+#FILE:         .functions
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#              Kotiaho, Markku P. (lines, pafter, puntil, pfunction, ztet)
+#              Bewley, Justin E. (calc, txdir)
+#DEPENDENCIES: .help; .path
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ------------------------------------------------
+#  0.1.0.0  2010.03.26  MPL     Basic functionality complete.
+#  0.2.0.0  2010.03.29  MPL     edit_files() added.
+#  0.3.0.0  2010.04.20  MPL     append_to_path() added.
+#  0.4.0.0  2011.01.18  MPL     append_to_path() and edit_files() removed.
+#  1.0.0.0  2011.03.08  MPL     Updated to new zsh loop syntax.
+#  1.0.0.1  2011.04.20  MPL     pafter(), puntil(), pfunction() added.
+#  1.0.0.2  2011.04.26  MPL     Removed $ARCH in favor of $CPUTYPE (set by ZSH).
+#  1.0.1.0  2011.08.23  MPL     fgl() added.
+#  1.0.1.1  2011.08.24  MPL     fgl() moved to efind.zsh.
+#  1.0.2.0  2012.04.11  MPL     pydate(), pydoy() added.
+#  1.1.0.0  2012.05.07  MPL     Switched to builtin colors for portability.
+#  1.2.0.0  2012.12.12  MPL     show_stats() added.
+#  1.2.1.0  2012.12.23  MPL     show_* moved to ${Z_HOME}/functions/show-info
+#
+#===============================================================================
+#NOTES:
+#
+#
+################################################################################
+
+#===============================================================================
+# Load built-in funtions
+#===============================================================================
+autoload -U colors && colors
+
+#===============================================================================
+# Load user funtions
+#===============================================================================
+widget_definitions=( debug-process insert-last-command-output )
+for function_path in ${user_fpath}/^_*; {
+  function_file=$(basename ${function_path})
+  autoload -U $function_file
+  if (( ${+widget_definitions[(r)$function_file]} )) {
+    zle -N ${function_file}
+  }
+}
+
+#===============================================================================
+# Define user funtions
+#===============================================================================
+
+2bin() { print "0b$(( [##2] $(basify $1) ))" } #print integer as base  2 (binary)
+2oct() { print "0o$(( [##8] $(basify $1) ))" } #print integer as base  8 (octal)
+2dec() { print "  $((       $(basify $1) ))" } #print integer as base 10 (decimal)
+2doz() { print "0d$(([##12] $(basify $1) ))" } #print integer as base 12 (dozenal)
+2hex() { print "0x$(([##16] $(basify $1) ))" } #print integer as base 16 (hexadecimal)
+
+# Convert "0{numeral-character}{numeral-value}" to "{numeral-base}#{numeral-value}".
+basify() {
+  sed -e 's/^0b/2#/' -e 's/^0o/8#/' -e 's/^0d/12#/' <<< $1
+}
+
+# Print a motivational phrase
+boost_self_esteem() {
+  local colors
+  colors=( "[3"{0..7}m "[1;3"{0..7}m ) #TODO: reorder colors to be more prismatic
+  local bold="[1m" nc="[0m"
+  local delay=0.15 adjective="$*"
+  
+  local -i offset=0
+  while [[ 1 -eq 1 ]]; do
+    print -n "> ${bold}You${nc} are "
+    for i in {0..$(( ${#adjective:=fabulous} + 1 ))}; {
+      local index="$(( (($i + $offset) % ${#colors}) + 1))"
+      print -n "${colors[${index}]}${adjective[$(( $i + 1 ))]}${nc}"
+    }
+    offset=$(( $offset + 1 % ${#adjective} ))
+    print -n "\r"
+    sleep ${delay}
+  done
+}
+
+# Do math
+# @author jubewle
+calc() {
+  bc -l <<< "$@"
+}
+
+# Check md5 sums against stored record
+check_sums() {
+  if [[ -f "$1" ]] {
+    md5sum -c "$1" | colorize_checksum
+  } else {
+    echo "\"${fg[red]}${1}${reset_color}\" is not a file."
+  }
+}
+
+# Colorize the output of md5sum or sha1sum
+colorize_checksum() {
+  sed "s:\(FAILED$\):${fg[red]}\1${reset_color}:" | sed "s:\(OK$\):${fg[green]}\1${reset_color}:"
+}
+
+# Set the terminal emulator's title (in the title bar)
+configure_title() {
+  case "${TERM}" in (xterm*)
+    precmd() print -Pn "\e]0;%n@%m: %~\a"   #user@host: /current/directory
+    ;;
+  esac
+}
+
+# Convert integer $3 of base $1 to base $2
+convert() {
+  print "obase=$2; ibase=$1; $3" | bc
+}
+
+fight() {
+  local READY_1="${fg[yellow]}(  9 =_=)9 ${reset_color}"
+  local PUNCH_1="${fg[yellow]}(  9 =_=)-o${reset_color}"
+  local PUNCH_2="${fg[yellow]}(  -o=_=)9 ${reset_color}"
+  
+  local READY_2="${fg[green]} Q(>_< Q  )${reset_color}"
+  local PUNCH_3="${fg[green]}O-(>_< Q  )${reset_color}"
+  local PUNCH_4="${fg[green]} Q(>_<O-  )${reset_color}"
+  
+  local READY_3="${fg[yellow]}(  9 =_=)9 ${fg[green]} Q(>_< Q  )${reset_color}"
+  local PUNCH_5="${fg[yellow]}(  9 =_=)-o${fg[green]} Q(>_< Q  )${reset_color}"
+  local PUNCH_6="${fg[yellow]}(  9 =_=)9 ${fg[green]} Q(>_<O-  )${reset_color}"
+  local PUNCH_7="${fg[yellow]}(  9 =_=)9 ${fg[green]}O-(>_< Q  )${reset_color}"
+  local PUNCH_8="${fg[yellow]}(  -o=_=)9 ${fg[green]} Q(>_< Q  )${reset_color}"
+  
+  for i in {1..4}; {
+    echo -ne " ${READY_1}\r"; sleep 0.5
+    echo -ne " ${PUNCH_1}\r"; sleep 0.2
+    echo -ne " ${PUNCH_2}\r"; sleep 0.2
+  }
+  
+  echo -ne "              \r" #clear line
+  
+  for i in {1..4}; {
+    echo -ne " ${READY_2}\r"; sleep 0.5
+    echo -ne " ${PUNCH_3}\r"; sleep 0.2
+    echo -ne " ${PUNCH_4}\r"; sleep 0.2
+  }
+  
+  for i in {1..2}; {
+    echo -ne " ${READY_3}\r"; sleep 0.5
+    echo -ne " ${PUNCH_5}\r"; sleep 0.2
+    echo -ne " ${PUNCH_6}\r"; sleep 0.2
+    echo -ne " ${READY_3}\r"; sleep 0.5
+    echo -ne " ${PUNCH_7}\r"; sleep 0.2
+    echo -ne " ${PUNCH_8}\r"; sleep 0.2
+  }
+}
+
+C_REGEX='.*\.(c|h)+(c|h|pp|xx|\+\+)?$' #requires POSIX-extended regex support
+SRC_REGEX="${C_REGEX}"'|.*.(java|py)$' #
+
+# Find C/C++ source files (case insensitive):
+#   .c, .h, .cc, .hh, .cpp, .hpp, .cxx, .hxx, .c++, .h++
+findc() {
+  find . -regextype posix-extended -iregex "${C_REGEX}" -type f
+}
+
+# Find files by extension
+findext() {
+  for ext in "$@"; {
+    find . -type f -name "*.${ext}"
+  }
+}
+
+# Find all source files (as defined by ${SRC_REGEX})
+findsrc() {
+  find . -regextype posix-extended -iregex "${SRC_REGEX}" -type f
+}
+
+# Search for a pattern in all files
+fs() {
+  find -L . -type f | xargs grep "$@"
+}
+
+# Search for a pattern in C/C++ source files
+fsc() {
+  findc | xargs grep "$@"
+}
+
+# Search for a pattern in Java source files
+fsj() {
+  findext java | xargs grep "$@"
+}
+
+# Search for a pattern in Python source files
+fsp() {
+  findext py | xargs grep "$@"
+}
+
+# Search for a pattern in source files
+fscode() {
+  findsrc | xargs grep "$@"
+}
+
+# Print lines $1 through $2 of file $3
+# @author makotia
+lines() {
+  nl -ba $3 | sed "$1,$2 !D"
+}
+
+# Print lines in $2 that come after the first line matching $1 (inclusive)
+# @author makotia
+pafter() {
+  sed -n "/$1/! {b}; :LOOP; p; n; bLOOP" $2
+}
+
+# Print lines in $2 that come before the first line matching $1 (inclusive)
+# @author makotia
+puntil() {
+  sed "/$1/ {q}" $2
+}
+
+# Attempt to print a C function named $1 in file $2
+# @author makotia
+pfunction() {
+  pafter "$1\W*(" ${@[2,-1]} | puntil "^}"
+}
+
+# Print my processes that match the input arguments
+psg() {
+  psme | grep -v grep | grep "$@"
+}
+
+# Print my processes
+psme() {
+  ps -U $(whoami) -o pid,ppid,command "$@"
+}
+
+# Print all processes that match the input arguments
+psag() {
+  ps -eaf | grep -v grep | grep "$@"
+}
+
+# Print my processes, showing hierarchy (forest)
+psf() {
+  psme --forest
+}
+
+# Print the result of the calculation
+pycalc() {
+  [[ -n $@ ]] && python -c "import sys; print eval(' '.join(sys.argv[1:]))" "$@"
+}
+
+# Print year and day of year, given year, month, and day
+pydoy() {
+  [[ -n "$@" ]] && python -c "import sys, time; print time.strftime('%Y/%j', time.strptime('/'.join(sys.argv[1:4]), '%Y/%m/%d'))" $@
+}
+
+# Print year, month, and day, given year and day of year
+pydate() {
+  [[ -n "$@" ]] && python -c "import sys, time; print time.strftime('%Y/%m/%d', time.strptime('/'.join(sys.argv[1:3]), '%Y/%j'))" $@
+}
+
+# Print my e-mail address (using the most obnoxious method conceivable)
+pyemail() {
+  python -c "print '@'.join(['.'.join([w[::-1] for w in p.split('.')]) for p in 'hacim.nosral,cgn.moc'.split(',')])"
+}
+
+# Print environment variables, sorted and escaped
+pyenv() {
+  python -c 'import os, pprint; pprint.pprint(dict(os.environ))'
+}
+
+# Print the system error corresponding to the error number(s) specified
+pyerror() {
+  [[ -n "$@" ]] && python -c "import os, sys; print '\n'.join([arg + ': ' + os.strerror(int(arg)) for arg in sys.argv[1:]])" $@
+}
+
+# Print unicode chars identified by args (ints)
+pyuni() {
+  [[ -n "$@" ]] && python -c "import sys; print ' '.join([unichr(int(x)) for x in sys.argv[1:]])" $@
+}
+
+rage() {
+  FG="${fg[red]}${bg[black]}"
+  BG="${fg[black]}${bg[red]}"
+  DELAY=0.1
+  ARRAY=( " ${BG}R${reset_color}${FG}AGE!${reset_color}\r"
+          " ${FG}R${reset_color}${BG}A${reset_color}${FG}GE!${reset_color}\r"
+          " ${FG}RA${reset_color}${BG}G${reset_color}${FG}E!${reset_color}\r"
+          " ${FG}RAG${reset_color}${BG}E${reset_color}${FG}!${reset_color}\r"
+          " ${FG}RAGE${reset_color}${BG}!${reset_color}\r" )
+
+  for i in {0..4}; {
+    for STRING in ${ARRAY[@]}; {
+      echo -ne " ${STRING}"; sleep ${DELAY}
+    }
+  }
+}
+
+# Reverse text within line ($1 needs to be a file)
+reverse() {
+  [[ -f $1 ]] && sed '/\n/!G;s/\(.\)\(.*\n\)/&\2\1/;//D;s/.//' $1
+}
+
+# Display help information
+shelp() {
+  [[ -f ${Z_HOME}/.help ]] && zsh ${Z_HOME}/.help
+}
+
+# Display system information
+si() {
+  show-info -c $@
+}
+
+# Wrap SSH such that disconnecting prints the old (ante-ssh-session) host name
+ssh() {
+  /usr/bin/ssh $@
+  if (( $? )); then
+    print -u 2 "${fg[red]}ssh failed${reset_color}; current host: $(hostname)"
+  else
+    print "current host: $(hostname)"
+  fi
+}
+
+# Wrap su (so we get the stupid DoD banner)
+su() {
+  ssh ${@[-1]}@$(hostname)
+}
+
+# Verify md5/sha1 checksums
+verify() {
+  local files
+  if [[ "$#" -lt 1 ]] {
+    print -u 2 'No files specified, globbing for *'
+    files=(*)
+  } else {
+    files=("$@")
+  }
+  
+  unset found
+  for file in ${(@)files}; {
+    for ext in md5 sha1; {
+      if [[ -f ${file}.${ext} ]] {
+        printf "${ext}:\t%s\n" "$(${ext}sum -c <(printf "$(<${file}.${ext})  ${file}"))" | colorize_checksum
+        local found=true
+      }
+    }
+  }
+  (( ${+found} )) || print -u 2 "${fg[red]}Found no checksum(s) (.md5 or .sha1) for input set [${(@)files}]${reset_color}"
+}
+
+xattr() {
+  xpath "$1" "$2" | cut -f2 -d\" #" stupid gvim syntax highlighting
+}
+
+xvalue() {
+  xpath "$1"'/text()' "$2"
+}
+
+##
+# Use XPath to extract data from an XML file
+#
+# @param xpath
+# @param file
+#
+xpath() {
+  xmllint --format --shell "$2" <<< "cat $1" | sed -e '/^\/.>/d' -e '/^[ ]*[-]*$/d'
+}
+
+# Play "textris" by pressing Ctrl-T
+# @author makotia
+ztet() {
+  autoload -U tetris && zle -N tetris
+  bindkey '' tetris
+}
+

@@ -1,0 +1,7 @@
+# open new tab in existing gVim session
+
+#TODO: add argument(s) to override server_name
+
+local server_name
+[[ ${+CLEARCASE_ROOT} == 1 ]] && server_name=GVIM_SERVER_$(basename "${CLEARCASE_ROOT}")
+/usr/bin/gvim --servername ${server_name:=GVIM_SERVER_DEFAULT} --remote-tab-silent $@

@@ -1,0 +1,124 @@
+################################################################################
+#FILE:         .cm
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#DEPENDENCIES: None
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ----------------------------------------
+#  0.1.0.0  2012.04.11  MPL     Split from ~/.zshrc
+#
+#===============================================================================
+#NOTES:
+#
+################################################################################
+
+autoload -U colors && colors
+
+#===============================================================================
+# Configure clearcase session
+#===============================================================================
+unset CC_TAG
+
+# This block will only execute if CLEARCASE_ROOT is defined (that is, if the
+# current session is a "clearcase" session).
+if (( ${+CLEARCASE_ROOT} )) {
+  # Define CC_TAG for insertion in prompt
+  export CC_TAG="%{${ALT_COLOR:=${fg[cyan]}}%}[$(basename $CLEARCASE_ROOT)]%{${reset_color}%} "
+  
+  # Change group (some CC stuff won't work otherwise)
+  [[ ${CC_GROUP:=irad} != "$(id -gn)" && ${SHLVL} -lt 10 ]] && exec newgrp ${CC_GROUP}
+  
+  # Change directory
+  [[ -d ${VOB_HOME:=/vobs} ]] && cd ${VOB_HOME}
+}
+
+alias   ct='cleartool'
+alias   sv='set_view.zsh'
+alias lsco='cleartool lsco -r -me -cview'
+
+_list_by_type() {
+  local ct_cmd="cleartool lstype -kind $1 -nos"
+  sort -u <(${=ct_cmd} -invob /vobs/borg101) <(${=ct_cmd} -invob /vobs/mission64)
+}
+
+list_branches() {
+  _list_by_type brtype
+}
+
+list_labels() {
+  _list_by_type lbtype
+}
+
+find_files_by_label() {
+  cleartool find -avobs -version "lbtype($1)" -print
+}
+
+find_files_by_branch() {
+  cleartool find -avobs -branch "brtype($1)" -print
+}
+
+print_branch_owner() {
+  for vob in borg101 mission64; printf "%10s: %10s\n" $vob $(ct lstype -fmt "%u" "brtype:$1@/vobs/${vob}" 2> /dev/null)
+}
+
+ci() {
+  CQCC_AUTO_ASSOCIATE=$1 cleartool checkin -nc ${@[2,-1]}
+}
+
+cia() {
+  ci $1 $(lsco -s)
+}
+
+unco() {
+  cleartool unco -rm "$@"
+}
+
+co() {
+  cleartool co -nc "$@"
+}
+
+cdr() { #configure clearcase for DR
+  if [[ "$1" != <-> ]]; then
+    print -u 2 "\$1 must be a number (\"$1\" is not a number)"
+    return 1
+  fi
+  dr=$(printf "espdb%08d" $1)
+  
+  for vob in borg101 mission64; ct mkbrtype -nc ${dr}@/vobs/${vob}
+  
+  ct mkview -tag ${dr} -stgloc -auto 1> /dev/null
+  print "Created view \"${dr}\"."
+  
+  #TODO: once setcs.pl is un-borked, use it here
+  print "/net/ccview/ccstg/scripts/setcs.pl -p espn -b ${dr} -l latest"
+}
+
+xlsvtree() {
+  LC_ALL=C =xlsvtree $*
+}
+
+#===============================================================================
+# Configure subversion session
+#===============================================================================
+alias ssc='svn_status_color -s acdimnrx!~'
+
+# Search svn database for a particular DR, print the revs in which it occurred
+# @author makotia
+whichrev()  {
+    re=$1
+    svn log $SVNBOA | grep -B50 $re | grep "$re\|^r[1-9]" | grep -B1 $re | awk '/^r[1-9]/ {print $1}'
+}
+
+# Search svn database for a particular DR, print the files that were checked in against it
+# @author makotia
+whichfiles() {
+    re=$1
+    for rrev in $(whichrev $re); do
+        print "Revision ${rev::=${rrev:s/r//}}"
+        svn log -gv -r $rev $SVNBOA | egrep "^[ ]{3}[ADM]"
+    done
+}
+

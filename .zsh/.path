@@ -1,0 +1,43 @@
+################################################################################
+#FILE:         .path
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#DEPENDENCIES: None
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ------------------------------------------------
+#  0.1.0.0  2010.03.26  MPL     Basic functionality complete.
+#  0.2.0.0  2011.03.08  MPL     Cleaned up functions, removed superfluous paths.
+#  1.0.0.0  2011.03.30  MPL     Updated to new for-loop syntax.
+#
+#===============================================================================
+#NOTES:
+#
+#
+################################################################################
+
+user_paths=(
+  ~/bin
+  ${JAVA_HOME}/bin
+  ${MAVEN_HOME}/bin
+  ${DERBY_HOME}/bin
+)
+
+# Append arg ($1) to path if it isn't already in path
+append_to_path() {
+  path=(${(@)path} ${1/%\//}) #1. naively append, stripping trailing slash
+  path=(${(u)path})           #2. remove duplicates
+}
+
+# Configure $PATH variable
+for user_path in ${user_paths[@]}; {
+  [[ -d "${user_path}" ]] && append_to_path "${user_path}"
+}
+
+user_fpath=${Z_HOME}/functions
+fpath=( ${user_fpath} ${(@)fpath} )
+fpath=(${(u)fpath})
+
+unset user_paths

@@ -1,0 +1,10 @@
+#compdef show-info
+
+_arguments \
+  '-l[list categories]' \
+  '-c[colorize]' \
+  '-v[verbose]' \
+  '-h[help]' \
+  \
+  "*:Categories:( $(show-info -l) )"
+

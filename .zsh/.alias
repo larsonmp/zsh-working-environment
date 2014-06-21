@@ -1,0 +1,128 @@
+################################################################################
+#FILE:         .alias
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#              Kotiaho, Markku P. (me, pi, +x. -x. 2hex, 2dec, mc)
+#              Bewley, Justin E. (-, --, ---)
+#              Reynolds, Rose (print_file, print_text)
+#DEPENDENCIES: None
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ------------------------------------------------
+#  0.1.0.0  2010.03.26  MPL     Basic functionality complete.
+#  0.2.0.0  2010.03.29  MPL     "gshark" refactored.
+#  1.0.0.0  2011.03.30  MPL     Documentation updated.
+#  1.0.0.1  2011.04.12  MPL     Added alias "cpu" for Mike McGuire.
+#  1.0.0.2  2011.04.13  MPL     Added "--color=always" to "la" and "lao".
+#  1.1.0.0  2012.04.11  MPL     Removed network-specific items.
+#
+#===============================================================================
+#NOTES:
+#
+#
+################################################################################
+
+#===============================================================================
+# Configure universal utility aliases
+#===============================================================================
+# @author makotia
+alias -g me=${USERNAME}
+
+if [[ -x /usr/bin/dircolors ]] {
+  eval "$(dircolors ${Z_HOME}/.dircolors)"
+  alias   ls='ls   --color=auto' #List w/ colors
+  alias  dir='dir  --color=auto' #List directories w/ colors
+  alias vdir='vdir --color=auto' #List directories w/ colors
+}
+
+alias  la='ls  -A'    #List all (include hidden files)
+alias lla='ls -lA'    #List all (include hidden files)
+alias  l.='ls -d .*'  #List hidden files
+alias  ll='ls -lh'    #List w/ details, human-readable
+alias  lm='ls -lAtr'  #List (sort by date modified)
+alias lsa='ls -lASh'  #List w/details, sorted by size (desc.)
+alias lsd='ls -lAShr' #List w/details, sorted by size (asc.)
+alias  lr='ls *(m0)'  #List recent (modified today) files
+
+alias perm='stat --format="%a %n" "$@"' #List w/ octal permissions
+
+alias p3='show-info -c path' #pretty print path -> ppp -> p^3 -> p3
+
+# @author makotia
+alias pi='pinfo -x' #Print program information
+alias vi='vim'      #Use VIM instead of VI
+
+which ls_to_octal &> /dev/null
+if [[ $? == 0 ]] {
+  alias  lo='ls -l  "$@" --color=always | ls_to_octal' #List w/ octal perm.
+  alias lao='ls -lA "$@" --color=always | ls_to_octal' #List all w/ octal perm.
+}
+
+# @author jubewle
+alias --    -='cd ..'
+alias --   --='cd ../..'
+alias --  ---='cd ../../..'
+
+alias :q='exit'
+
+# @author makotia
+alias -- +x='chmod +x' #shortcut to set exe bit
+alias -- -x='chmod -x' #shortcut to unset exe bit
+
+alias  psp='ps -p $$'                       #Print this process (the shell)
+alias  pst='ps -o pid,ppid,command'         #Print this shell's processes
+alias   tu='top -U $(whoami)'               #Print my CPU/MEM usage stats
+alias  cpu='ps -eao uname,pid,%cpu,%mem,cmd --sort=-%cpu | head -n 10'
+
+alias  xt='xterm -g 64x32'
+
+alias eclipse='=eclipse -vmargs -Xmx2048M &' #Eclipse with more memory
+
+alias ex=~/scripts/ex.zsh #extract generic archive (masks /usr/bin/ex)
+
+# utilities from /sbin and /usr/sbin (don't want the entire directories in path)
+for exe in /sbin/{arp,fdisk,fuser,ifconfig,pidof,route} /usr/sbin/{alternatives,apachectl,chroot,groupadd,groupdel,httpd,lsof,nstat}; {
+  alias $(basename ${exe})=${exe}
+}
+
+# active ports
+alias sockc='netstat  -eeptu --numeric-ports' #connected sockets
+alias sockl='sockc -l'                        #listening sockets
+
+# @author makotia
+alias mc='/usr/bin/mc -u --colors normal=white,black' #visual shell
+
+alias rh='more /etc/redhat-release' #Print RedHat version
+
+alias archive='ant -f ~/etc/build-archive.xml'
+
+alias xld='xauth list ${DISPLAY//localhost/$(hostname)/unix}'
+
+#===============================================================================
+# File management
+#===============================================================================
+alias  shark='unset ZSHRC_COMPLETE; source ~/.zshrc'
+
+alias gshark='/usr/bin/gvim -p $z_files' #ignore function named gvim
+alias mshark='chmod u+w $z_files'
+alias lshark='chmod a-w $z_files'
+
+alias gfunc='/usr/bin/gvim -p $func_files'
+alias mfunc='chmod u+w $func_files'
+alias lfunc='chmod a-w $func_files'
+
+alias gdot='/usr/bin/gvim -p $dot_files'
+alias mdot='chmod u+w $dot_files'
+alias ldot='chmod a-w $dot_files'
+
+alias gscreen='/usr/bin/gvim -p $screen_files'
+alias mscreen='chmod u+w $screen_files'
+alias lscreen='chmod a-w $screen_files'
+
+alias lsz='ls ${z_files}'
+alias llz='ll ${z_files}'
+alias lsd='ls ${dot_files}'
+alias lld='ll ${dot_files}'
+

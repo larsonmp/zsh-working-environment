@@ -1,0 +1,176 @@
+################################################################################
+#FILE:         .bindings
+#PLATFORMS:    GNU/Linux
+#AUTHOR(s):    Larson, Micah P.
+#DEPENDENCIES: .functions
+#
+#VERSION HISTORY:
+#
+#  Version  Date        Author  Description
+#  -------  ----------  ------  ------------------------------------------------
+#  0.1.0.0  2011.02.24  MPL     Basic functionality complete.
+#  0.2.0.0  2011.02.26  MPL     Cleaned up syntax.
+#  1.0.0.0  2011.03.18  MPL     Fixed documentation.
+#  1.0.1.0  2012.12.26  MPL     Updated documentation.
+#
+#===============================================================================
+#NOTES:
+#
+#
+################################################################################
+
+autoload zkbd
+
+##
+# find an appropriate zkbd file
+#
+# return 0 if file is found, 1 otherwise
+#
+get_zkbd_file() {
+  local -a files; files=("${COLORTERM:-${TERM}}-${VENDOR}-${OSTYPE}" "${COLORTERM:-${TERM}}-${DISPLAY}")
+  for file in $files; {
+    [[ -f ~/.zkbd/${file} ]] && printf '%s' ~/.zkbd/${file} && return 0
+  }
+  return 1
+}
+
+#ensure directory exists
+[[ ! -d ~/.zkbd ]] && mkdir ~/.zkbd
+
+#attempt to retrieve zkbd file
+keyfile=$(get_zkbd_file)
+rv=$?
+if [[ ${rv} -ne 0 ]] {
+  zkbd #this launches an interactive process
+  keyfile=$(get_zkbd_file)
+  rv=$?
+}
+
+#load zkbd file if one was found, give up otherwise
+if [[ ${rv} -eq 0 ]] {
+  source "${keyfile}"
+} else {
+  printf 'Failed to setup keys using zkbd.\n'
+}
+
+#clean up
+unfunction get_zkbd_file
+unset keyfile rv
+
+# configure key bindings
+[[ -n "${key[Home]}"   ]] && bindkey "${key[Home]}"   beginning-of-line
+[[ -n "${key[End]}"    ]] && bindkey "${key[End]}"    end-of-line
+[[ -n "${key[Insert]}" ]] && bindkey "${key[Insert]}" overwrite-mode
+[[ -n "${key[Delete]}" ]] && bindkey "${key[Delete]}" delete-char
+[[ -n "${key[Up]}"     ]] && bindkey "${key[Up]}"     up-line-or-history
+[[ -n "${key[Down]}"   ]] && bindkey "${key[Down]}"   down-line-or-history
+[[ -n "${key[Left]}"   ]] && bindkey "${key[Left]}"   backward-char
+[[ -n "${key[Right]}"  ]] && bindkey "${key[Right]}"  forward-char
+
+bindkey -r '' #unbind the default 'vi-backward-kill-word' to free up ^W
+
+bindkey '' debug-process
+bindkey '' vi-backward-kill-word
+bindkey '' kill-word
+bindkey '' expand-cmd-path
+bindkey '' kill-line
+bindkey '' push-line
+bindkey '' history-incremental-search-backward
+bindkey '' execute-named-cmd
+bindkey '' reset-prompt
+
+bindkey -s '' 'show-info stats'
+
+bindkey '[1;2D' backward-word
+
+bindkey '[1;2D' backward-word              #<shift> + <left>
+bindkey '[1;2C' forward-word               #<shift> + <right>
+
+
+bindkey '[1;5C' copy-prev-shell-word       #<ctrl> + <right>
+
+bindkey '[2;5~' insert-last-command-output #<ctrl> + <insert>
+
+# reference ====================================================================
+#- <ctrl> + A  debug-process
+#-             launch gdb and attach to a suspended process
+#-
+#- <ctrl> + B  vi-backward-kill-word
+#-             kill the word behind the cursor
+#-
+#- <ctrl> + C  (typically consumed by the terminal: used for SIGINT)
+#-
+#- <ctrl> + D  list-choices
+#-             list possible completions for the current word
+#-
+#- <ctrl> + E  kill-word
+#-             delete up to the next word
+#-
+#- <ctrl> + F  expand-cmd-path
+#-             expand the current command to its full path name
+#-
+#- <ctrl> + G  list-expand
+#-             list the expansion of the current word
+#-
+#- <ctrl> + H  vi-backward-delete-char
+#-             delete the previous character (backspace, basically)
+#-
+#- <ctrl> + I  expand-or-complete
+#-             attempt expansion on the current word; if that fails, attempt
+#-             completion
+#-
+#- <ctrl> + J
+#- <ctrl> + M  accept-line
+#-             execute the contents of the buffer
+#-
+#- <ctrl> + K  kill-line
+#-             delete the rest of the line (from the cursor)
+#-
+#- <ctrl> + L  clear-screen
+#-             clear the screen and redraw the prompt
+#-
+#- <ctrl> + N (free)
+#-
+#- <ctrl> + O (free)
+#-
+#- <ctrl> + P  push-line
+#-             push the current buffer onto the buffer stack and clear the
+#-             buffer; next time the editor starts up, the buffer will be
+#-             popped off the buffer stack and loading into the existing
+#-             buffer
+#-
+#- <ctrl> + Q (typically consumed by the terminal: used to break scroll-lock)
+#-
+#- <ctrl> + R  history-incremental-search-backward
+#-             search history incrementally in reverse (from most recent)
+#-
+#- <ctrl> + S (typically consumed by the terminal: used to engage scroll-lock)
+#-
+#- <ctrl> + T "show-info stats"
+#-             print top 20 most-used commands/functions
+#-
+#- <ctrl> + U  vi-kill-line
+#-             kill from the cursor back to wherever insert mode was last
+#-             entered
+#-
+#- <ctrl> + V  vi-quoted-insert
+#-             display a ^ at the current position, and insert the next
+#-             character typed into the buffer literally; an interrupt
+#-             character will not be inserted
+#-
+#- <ctrl> + W (free, used by screen)
+#-
+#- <ctrl> + X  execute-named-cmd
+#-             read the name of an editor command and execute it
+#-
+#- <ctrl> + Y (free)
+#-
+#- <ctrl> + Z  reset-prompt
+#-             reset the prompt
+#-------------------------------------------------------------------------------
+#- <shift> + <left>  backward-word
+#-                   move to the beginning of the previous word
+#-
+#- <shift> + <right> forward-word
+#-                   move to the beginning of the next word
+#===============================================================================
