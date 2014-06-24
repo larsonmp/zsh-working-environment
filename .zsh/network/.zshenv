@@ -37,18 +37,19 @@ printers=(
 #===============================================================================
 autoload -U colors && colors
 
-typeset -A main_colors alt_colors
-main_colors=(
+typeset -A network_colors host_colors
+network_colors=(
   nix1.ornge.bouco.ngc	${fg[yellow]}
   nix1.ylw.bouco.ngc	${fg_bold[yellow]}
   nix1.red.bouco.ngc	${fg_bold[red]}
   cs.colorado.edu	${fg[green]}
 )
-export MAIN_COLOR=${main_colors[$(dnsdomainname)]:=${fg_bold[magenta]}}
 
-alt_colors=(
+host_colors=(
   squawkbox	${fg[blue]}
   moxie		${fg[yellow]}
 )
-export ALT_COLOR=${alt_colors[$(hostname)]:=${fg[white]}}
+
+export NETWORK_COLOR=${network_colors[$(dnsdomainname)]:=${fg_bold[magenta]}}
+export HOST_COLOR=${host_colors[${HOST}]:=${fg[white]}}
 

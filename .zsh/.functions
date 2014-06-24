@@ -23,6 +23,7 @@
 #  1.1.0.0  2012.05.07  MPL     Switched to builtin colors for portability.
 #  1.2.0.0  2012.12.12  MPL     show_stats() added.
 #  1.2.1.0  2012.12.23  MPL     show_* moved to ${Z_HOME}/functions/show-info
+#  1.2.2.0  2014.05.15  MPL     removed useless functions
 #
 #===============================================================================
 #NOTES:
@@ -113,6 +114,11 @@ configure_title() {
 # Convert integer $3 of base $1 to base $2
 convert() {
   print "obase=$2; ibase=$1; $3" | bc
+}
+
+# Print the 10 processes consuming the most CPU resources
+cpu() {
+  ps -eao uname,pid,%cpu,%mem,cmd --sort=-%cpu | head -n 10
 }
 
 fight() {
@@ -206,6 +212,14 @@ lines() {
   nl -ba $3 | sed "$1,$2 !D"
 }
 
+# "let me manpage that for you" - create a temporary PDF of the man page (useful for mocking people)
+lmmtfy() {
+  local filepath=$(mktemp -t $1.pdf.XXXXXX)
+  man -t $1 | ps2pdf - ${filepath}
+  evince $filepath
+  rm $filepath
+}
+
 # Print lines in $2 that come after the first line matching $1 (inclusive)
 # @author makotia
 pafter() {
@@ -242,6 +256,16 @@ psag() {
 # Print my processes, showing hierarchy (forest)
 psf() {
   psme --forest
+}
+
+# Print this process (the shell)
+psp() {
+  ps -p $$
+}
+
+# Print this shell's processes
+pst() {
+  ps -o pid,ppid,command
 }
 
 # Print the result of the calculation
@@ -326,6 +350,11 @@ su() {
   ssh ${@[-1]}@$(hostname)
 }
 
+# Print my CPU/MEM usage stats
+tu() {
+  top -U ${USER}
+}
+
 # Verify md5/sha1 checksums
 verify() {
   local files
@@ -346,6 +375,19 @@ verify() {
     }
   }
   (( ${+found} )) || print -u 2 "${fg[red]}Found no checksum(s) (.md5 or .sha1) for input set [${(@)files}]${reset_color}"
+}
+
+wd() {
+  wpd_diffs.zsh "$@"
+}
+
+# Retrieve a value from the wibserver
+wgit() {
+  curl -X GIT $SERVER_HOST:=localhost}:${SERVER_PORT:=9979}/get@${SERVER_TABLE:=env}/$1 2> /dev/null
+}
+
+wp() {
+  wpi_pruner.zsh "$@"
 }
 
 xattr() {

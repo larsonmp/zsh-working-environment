@@ -11,6 +11,7 @@
 #  0.1.0.0  2010.03.26  MPL     Basic functionality complete.
 #  0.2.0.0  2011.03.08  MPL     Cleaned up functions, removed superfluous paths.
 #  1.0.0.0  2011.03.30  MPL     Updated to new for-loop syntax.
+#  1.1.0.0  2014.06.23  MPL     New hashes.
 #
 #===============================================================================
 #NOTES:
@@ -18,11 +19,18 @@
 #
 ################################################################################
 
+hash -d  ant=%{ANT_HOME}
+hash -d java=${JAVA_HOME}
+hash -d func=${Z_HOME}/functions
+
 user_paths=(
+  ${EPD_HOME}/bin
   ~/bin
-  ${JAVA_HOME}/bin
+  ~ant/bin
+  ~java/bin
   ${MAVEN_HOME}/bin
   ${DERBY_HOME}/bin
+  ${ACTIVEMQ_HOME}/bin
 )
 
 # Append arg ($1) to path if it isn't already in path

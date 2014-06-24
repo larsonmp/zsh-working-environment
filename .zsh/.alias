@@ -71,19 +71,18 @@ alias :q='exit'
 alias -- +x='chmod +x' #shortcut to set exe bit
 alias -- -x='chmod -x' #shortcut to unset exe bit
 
-alias  psp='ps -p $$'                       #Print this process (the shell)
-alias  pst='ps -o pid,ppid,command'         #Print this shell's processes
-alias   tu='top -U $(whoami)'               #Print my CPU/MEM usage stats
-alias  cpu='ps -eao uname,pid,%cpu,%mem,cmd --sort=-%cpu | head -n 10'
-
 alias  xt='xterm -g 64x32'
 
 alias eclipse='=eclipse -vmargs -Xmx2048M &' #Eclipse with more memory
 
 alias ex=~/scripts/ex.zsh #extract generic archive (masks /usr/bin/ex)
 
+# @author roreyno
+alias print_file 'lp \!*'
+alias print_text 'enscript -d $PRINTER -f Times-Roman10 --language PostScript \!*'
+
 # utilities from /sbin and /usr/sbin (don't want the entire directories in path)
-for exe in /sbin/{arp,fdisk,fuser,ifconfig,pidof,route} /usr/sbin/{alternatives,apachectl,chroot,groupadd,groupdel,httpd,lsof,nstat}; {
+for exe in /sbin/{arp,fdisk,fuser,ifconfig,pidof,route} /usr/sbin/{alternatives,apachectl,chroot,groupadd,groupdel,httpd,lsof,nstat,ss}; {
   alias $(basename ${exe})=${exe}
 }
 

@@ -56,16 +56,16 @@ autoload -U zmv
 # Configure the prompt
 #===============================================================================
 # Display a path prompt (with main colors)
-export PS1="${CC_TAG}%{${MAIN_COLOR}%}%d%{${reset_color}%} %B>%b "
+export PS1="${CC_TAG}%{${NETWORK_COLOR}%}%d%{${reset_color}%} %B>%b "
 
 # Display a secondary prompt (for for-loops, etc.)
-export PS2="%{${MAIN_COLOR}%}[...]%{${reset_color}%} > "
+export PS2="%{${NETWORK_COLOR}%}[...]%{${reset_color}%} > "
 
 # Display a timestamp, shell level, job count, and history count, on the right
-export RPS1="%{${ALT_COLOR}%}[%*][${SHLVL}][%j][%!]%{${reset_color}%}"
+export RPS1="%{${HOST_COLOR}%}[%*][${SHLVL}][%j][%!]%{${reset_color}%}"
 
 # Display a secondary prompt with current command and line, on the right
-export RPS2=" < %{${ALT_COLOR}%}[%_: %i]%{${reset_color}%}"
+export RPS2=" < %{${HOST_COLOR}%}[%_: %i]%{${reset_color}%}"
 
 if [[ /proc/$PPID/exe -ef /usr/bin/mc ]]; then
   unset PS1 PS2 PS3 RPS1 RPS2
@@ -92,8 +92,7 @@ umask 002             # create files with ug+rw by default
 export ZSHRC_COMPLETE=1
 
 chpwd() {
-  [[ -t 1 ]] || return #quit if stdout is unavailable
-  configure_title
+  [[ -t 1 ]] && configure_title
 }
 configure_title
 

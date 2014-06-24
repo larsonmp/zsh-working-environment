@@ -34,6 +34,12 @@ colorscheme lucius
 LuciusDark
 set guifont=Inconsolata\ 14
 
+" Remove unneeded toolbar buttons ----------------------------------------------
+aunmenu ToolBar.Print
+aunmenu ToolBar.-sep7-
+aunmenu ToolBar.Help
+aunmenu ToolBar.FindHelp
+
 " Set syntax highlighting rules for non-standard file extensions ---------------
 au BufReadPost           *.jy   set syntax=python
 au BufReadPost           *.pyrc set syntax=python
@@ -41,23 +47,9 @@ au BufReadPost .dircolors       set syntax=dircolors
 au BufReadPost .screenrc.*      set syntax=screen
 
 " zshrc support files
-au BufReadPost .alias           set syntax=zsh
-au BufReadPost .bindings        set syntax=zsh
-au BufReadPost .cm              set syntax=zsh
-au BufReadPost .completion      set syntax=zsh
-au BufReadPost .functions       set syntax=zsh
-au BufReadPost .options         set syntax=zsh
-au BufReadPost .path            set syntax=zsh
-
-" zsh functions
-au BufReadPost debug-process              set syntax=zsh
-au BufReadPost emacs                      set syntax=zsh
-au BufReadPost footprint                  set syntax=zsh
-au BufReadPost gvim                       set syntax=zsh
-au BufReadPost insert-last-command-output set syntax=zsh
-au BufReadPost show-info                  set syntax=zsh
-au BufReadPost txdir                      set syntax=zsh
-au BufReadPost wpf                        set syntax=zsh
+au BufReadPost ${Z_HOME}/*           set syntax=zsh
+au BufReadPost ${Z_HOME}/functions/* set syntax=zsh
+au BufReadPost ${Z_HOME}/network/*   set syntax=zsh
 
 " Set pydiction options --------------------------------------------------------
 "filetype plugin on
@@ -73,10 +65,10 @@ let html_use_css = 1       " use stylesheet instead of inline style
 set path=.,/usr/include
 
 " Backup and swap file stuff ---------------------------------------------------
-set backup           "backup files on edit
-"set bex=.bak        "extension to use for backup files
+set backup              "backup files on edit
+"set bex=.bak           "extension to use for backup files
 set bdir=~/.vim/backup/ "directory for backup files
-set dir=~/.vim/swp// "directory for swap files
+set dir=~/.vim/swp/     "directory for swap files
 
 " Set print option (doesn't work yet on Orange/Secret) -------------------------
 "set printexpr=PrintFile(v:fname_in)

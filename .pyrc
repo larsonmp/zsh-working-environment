@@ -11,3 +11,20 @@ except ImportError:
 else:
     import rlcompleter
     readline.parse_and_bind("tab: complete")
+    del rlcompleter
+    
+    import atexit, os
+    history_path = os.path.expanduser('~/.python/history')
+    
+    def save_history(filepath=history_path):
+        import os, readline
+        if not os.path.exists(os.path.dirname(filepath)):
+            os.mkdir(os.path.dirname(filepath))
+        readline.write_history_file(filepath)
+    
+    atexit.register(save_history)
+    
+    if os.path.exists(history_path):
+        readline.read_history_file(history_path)
+    
+    del os, atexit, readline, save_history, history_path

@@ -53,11 +53,17 @@ list_labels() {
 }
 
 find_files_by_label() {
-  cleartool find -avobs -version "lbtype($1)" -print
+  label=$1
+  shift
+  paths=("$@")
+  cleartool find ${paths:=-avobs} -version "lbtype(${label})" -print 2> /dev/null
 }
 
 find_files_by_branch() {
-  cleartool find -avobs -branch "brtype($1)" -print
+  branch=$1
+  shift
+  paths=("$@")
+  cleartool find ${paths:=-avobs} -branch "brtype(${branch})" -print
 }
 
 print_branch_owner() {
@@ -65,11 +71,23 @@ print_branch_owner() {
 }
 
 ci() {
+  if [[ $1 != <-> ]]; then
+    print -u 2 "\"$1\" doesn\'t look like a DR number"
+    return 1
+  fi
   CQCC_AUTO_ASSOCIATE=$1 cleartool checkin -nc ${@[2,-1]}
 }
 
 cia() {
+  if [[ $1 != <-> ]]; then
+    print -u 2 "\"$1\" doesn\'t look like a DR number"
+    return 1
+  fi
   ci $1 $(lsco -s)
+}
+
+cid() {
+  cleartool describe -fmt "$En: %On\n" "$@"
 }
 
 unco() {
@@ -96,7 +114,7 @@ cdr() { #configure clearcase for DR
   print "/net/ccview/ccstg/scripts/setcs.pl -p espn -b ${dr} -l latest"
 }
 
-xlsvtree() {
+xvt() {
   LC_ALL=C =xlsvtree $*
 }
 

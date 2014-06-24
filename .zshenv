@@ -106,6 +106,8 @@ screen_files=(
 #===============================================================================
 # Miscellany
 #===============================================================================
+export LOG_DIR=~/log
+
 # set pagers and editors
 export   PAGER='less'
 export  EDITOR='vim'
@@ -132,14 +134,24 @@ export GREP_OPTIONS='--color=auto' # make grep print in color by default
 # python startup file
 [[ -r ${PYTHONSTARTUP:=~/.pyrc} ]] && export PYTHONSTARTUP
 
+# Enthought Python Distribution
+#export EPD_HOME=/opt/epd
+
+#CScope
+export CSCOPE_DB=~/.cscope/cscope.db
+
 # java
 export JAVA_HOME=/usr/java/latest
+
+# jms
+export ACTIVEMQ_HOME=~/programs/apache-activemq/default
 
 # log4j
 #export LOG4J_HOME=/nas_media/Central_Library_Repo/apache-log4j-1.2.16
 #append_to_classpath "${LOG4J_HOME}/log4j-1.2.16.jar"
 
 # ant
+export ANT_HOME=/usr/share/ant
 export ANT_LOGGER='org.apache.tools.ant.listener.AnsiColorLogger'
 export ANT_LOGGER_CFG=~/etc/ant.properties
 export ANT_ARGS="-logger ${ANT_LOGGER}"
@@ -157,6 +169,13 @@ append_to_classpath ${DERBY_HOME}/lib/derbytools.jar
 
 # geronimo
 export GERONIMO_OPTS=-XX:-UseSplitVerifier
+
+# tomcat
+#export CATALINA_HOME=~/programs/apache-tomcat/default
+
+# postgresql
+export PGDATA=/var/tmp/larsonmp/pgsql/data
+export PGLOG=${LOG_DIR}/postgresql.log
 
 #===============================================================================
 # Import network-specific settings
