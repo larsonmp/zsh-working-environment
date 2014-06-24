@@ -1,0 +1,7 @@
+#tail -f, timestamping each line
+if [[ -r "$1" ]]; then
+  tail -f $1 | awk '{sub(/^/, strftime("%F %T%z\t")); print}'
+else
+  print -u 2 "$0: file \"$1\" cannot be read"
+fi
+

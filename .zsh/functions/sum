@@ -1,0 +1,3 @@
+[[ 0 < $# ]] && export column=$1
+awk '{ sum+=$'$column:=1}' } END { print sum }'
+

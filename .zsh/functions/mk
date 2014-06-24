@@ -1,0 +1,1 @@
+make -f Makefile*([1]) $@ 2> >(egrep '^[^[:space:]]*') 1> >(GREP_COLOR='1;36' egrep '^[^[:space:]]*'))

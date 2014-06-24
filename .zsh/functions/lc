@@ -1,0 +1,1 @@
+locate --regex "/$1\$" -0 | xargs -0 ls -ld --color=always
