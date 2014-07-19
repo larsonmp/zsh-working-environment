@@ -24,7 +24,7 @@ class Properties(OrderedDict):
         if defaults:
             self.update(defaults)
         content = []
-        if type(intpu) is file:
+        if type(input) is file:
             content = input.readlines()
         else:
             with open(input) as fp:
@@ -44,7 +44,7 @@ class Properties(OrderedDict):
                     raise SyntaxError('key cannot be empty')
                 yield key, value
             except(ValueError, SyntaxError) as error:
-                stderr.write('line %d: invalid syntax: "%s" -- %s\n' % (lineno + 1, line.strip(), str(error))
+                stderr.write('line %d: invalid syntax: "%s" -- %s\n' % (lineno + 1, line.strip(), str(error)))
     
     @classmethod
     def _parse_xml(cls, xml_content):
@@ -59,13 +59,13 @@ class Properties(OrderedDict):
     def _from_file(cls, input, parse_method, defaults=None):
         """Helper method for from_file and from_xml_file."""
         p = Properties()
-        p.load(input, parsemethod, defaults)
+        p.load(input, parse_method, defaults)
         return p
     
     @classmethod
     def from_file(cls, input, defaults=None):
         """Create a new Properties containing properties from input and defaults; values in input override values in defaults."""
-        return Properties._from_file(input, Properites._parse, defaults)
+        return Properties._from_file(input, Properties._parse, defaults)
     
     @classmethod
     def from_xml_file(cls, input, defaults=None):
