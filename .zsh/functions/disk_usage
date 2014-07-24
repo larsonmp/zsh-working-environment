@@ -1,0 +1,3 @@
+setopt EXTENDED_GLOB GLOB_DOTS
+integer bytes=$(du -sb ~/^.snapshot | awk '{ sum+=$1 } END { print sum }' )
+printf '%d bytes (%1.3 GB, %1.3 GiB)\n' $bytes $[bytes / (1000.0 ** 3)] $[bytes / (1024.0 ** 3)]
