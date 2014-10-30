@@ -158,6 +158,8 @@ show_path() {
 show_platform() {
   print "${main_color}Platform${reset_color}:    ${OS} (${KERNEL}) on ${CPUTYPE}"
   print "${main_color}OS${reset_color}:          $(cat /etc/redhat-release)"
+  print "${main_color}CPU${reset_color}:         $(cat /proc/cpuinfo | awk -F: '/^model.name/ {print $NF}' | sort -u | sed 's/^[[:space:]]//')"
+  print "${main_color}GPU${reset_color}:         $(lspci | awk -F: '/VGA/ {print %NF}' | sed 's/^[[:space:]]//')"
 }
 
 ##
