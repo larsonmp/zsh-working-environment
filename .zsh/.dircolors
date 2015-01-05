@@ -111,14 +111,17 @@ EXEC 32 # This is for files with execute permission                            #
 .vimrc             04 #                                                        #
 .xinitrc           04 #                                                        #
 ################################################################################
-# GENERAL CONFIGURATION FILES (MAGENTA)                                        #
+# GENERAL CONFIGURATION AND DATA FILES (MAGENTA)                               #
 #==============================================================================#
-.xml        00;35 # .xml, .properties, etc.                                    #
-.xsd        00;35 #                                                            #
-.cfg        00;35 #                                                            #
-.properties 00;35 #                                                            #
+*SConstruct 00;35 # .xml, .properties, etc.                                    #
 *Makefile   00;35 #                                                            #
+.cfg        00;35 #                                                            #
 .ini        00;35 #                                                            #
+.json       00;35 #                                                            #
+.kml        00;35 #                                                            #
+.properties 00;35 #                                                            #
+.xml        00;35 #                                                            #
+.xsd        00;35 #                                                            #
 ################################################################################
 # ARCHIVE FILES                                                                #
 #==============================================================================#
