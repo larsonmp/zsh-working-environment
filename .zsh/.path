@@ -19,15 +19,15 @@
 #
 ################################################################################
 
-hash -d  ant=%{ANT_HOME}
-hash -d java=${JAVA_HOME}
+[[ -d ${ANT_HOME}  ]] && hash -d  ant=%{ANT_HOME}
+[[ -d ${JAVA_HOME} ]] && hash -d java=${JAVA_HOME}
 hash -d func=${Z_HOME}/functions
 
 user_paths=(
   ${EPD_HOME}/bin
   ~/bin
-  ~ant/bin
-  ~java/bin
+  ${ANT_HOME}/bin
+  ${JAVA_HOME}/bin
   ${MAVEN_HOME}/bin
   ${DERBY_HOME}/bin
   ${ACTIVEMQ_HOME}/bin
