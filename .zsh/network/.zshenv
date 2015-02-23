@@ -25,9 +25,6 @@
 #===============================================================================
 typeset -A printers
 printers=(
-  nix1.ornge.bouco.ngc	printer50
-  nix1.ylw.bouco.ngc	bc03-prt001
-  nix1.red.bouco.ngc	bc04-prt002
 #  cs.colorado.edu	?
 )
 (( ${+printers[$(dnsdomainname)]} )) && export PRINTER=${printers[$(dnsdomainname)]}
@@ -39,15 +36,15 @@ autoload -U colors && colors
 
 typeset -A network_colors host_colors
 network_colors=(
-  nix1.ornge.bouco.ngc	${fg[yellow]}
-  nix1.ylw.bouco.ngc	${fg_bold[yellow]}
-  nix1.red.bouco.ngc	${fg_bold[red]}
   cs.colorado.edu	${fg[green]}
 )
 
 host_colors=(
-  squawkbox	${fg[blue]}
-  moxie		${fg[yellow]}
+  squawkbox		${fg[blue]}
+  raspberry-pi-01	${fg[cyan]}
+  raspberry-pi-02	${fg[cyan]}
+  raspberry-pi-xbian	${fg[yellow]}
+  moxie			${fg[red]}
 )
 
 export NETWORK_COLOR=${network_colors[$(dnsdomainname)]:=${fg_bold[magenta]}}

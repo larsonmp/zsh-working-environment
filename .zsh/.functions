@@ -345,11 +345,6 @@ ssh() {
   fi
 }
 
-# Wrap su (so we get the stupid DoD banner)
-su() {
-  ssh ${@[-1]}@$(hostname)
-}
-
 # Print my CPU/MEM usage stats
 tu() {
   top -U ${USER}
@@ -375,19 +370,6 @@ verify() {
     }
   }
   (( ${+found} )) || print -u 2 "${fg[red]}Found no checksum(s) (.md5 or .sha1) for input set [${(@)files}]${reset_color}"
-}
-
-wd() {
-  wpd_diffs.zsh "$@"
-}
-
-# Retrieve a value from the wibserver
-wgit() {
-  curl -X GIT $SERVER_HOST:=localhost}:${SERVER_PORT:=9979}/get@${SERVER_TABLE:=env}/$1 2> /dev/null
-}
-
-wp() {
-  wpi_pruner.zsh "$@"
 }
 
 xattr() {

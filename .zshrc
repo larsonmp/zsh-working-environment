@@ -82,9 +82,9 @@ TRAPINT() {
 #===============================================================================
 # Perform login operations
 #===============================================================================
-ulimit -c unlimited   # don't limit the size of core files
-ulimit -s unlimited   # don't limit the size of the stack
-umask 002             # create files with ug+rw by default
+ulimit -c unlimited	# don't limit the size of core files
+#ulimit -s unlimited	# don't limit the size of the stack
+umask 002		# create files with ug+rw by default
 
 # Display welcome information (ignore if not login shell)
 (( ${+ZSHRC_COMPLETE} )) || (clear; show-info -c welcome)

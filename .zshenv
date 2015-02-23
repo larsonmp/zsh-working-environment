@@ -60,7 +60,7 @@ export REPORTTIME=60
 export TIMEFMT="${fg[magenta]}%J${reset_color}: %*E"
 
 #configure information printed when log builting is invoked
-watch=(makotia gaalfor vironde)
+watch=()
 export LOGCHECK=30
 export WATCHFMT="%S%B[%D %t]%b%s ${fg[yellow]}%n${reset_color}%(M:@${fg[yellow]}%U%M%u${reset_color}:) has %a to %l"
 
@@ -94,13 +94,6 @@ dot_files=(
   ${Z_HOME}/.cm
   ${Z_HOME}/.dircolors
   ~/.Xresources
-)
-
-typeset -Ua screen_files
-screen_files=(
-  ~/.screenrc.default
-  ~/.screenrc
-  ~/.screenrc.*
 )
 
 #===============================================================================
@@ -138,7 +131,7 @@ export GREP_OPTIONS='--color=auto' # make grep print in color by default
 #export EPD_HOME=/opt/epd
 
 #CScope
-export CSCOPE_DB=~/.cscope/cscope.db
+#export CSCOPE_DB=~/.cscope/cscope.db
 
 # java
 export JAVA_HOME=/usr/java/latest
@@ -176,6 +169,9 @@ export GERONIMO_OPTS=-XX:-UseSplitVerifier
 # postgresql
 export PGDATA=/var/tmp/larsonmp/pgsql/data
 export PGLOG=${LOG_DIR}/postgresql.log
+
+# virtual environment (for python devleopment)
+export VENV=~/sanbox/env
 
 #===============================================================================
 # Import network-specific settings

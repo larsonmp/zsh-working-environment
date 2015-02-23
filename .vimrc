@@ -68,29 +68,7 @@ set path=.,/usr/include
 set backup              "backup files on edit
 "set bex=.bak           "extension to use for backup files
 set bdir=~/.vim/backup/ "directory for backup files
-set dir=~/.vim/swp/     "directory for swap files
-
-" Set print option (doesn't work yet on Orange/Secret) -------------------------
-"set printexpr=PrintFile(v:fname_in)
-"function PrintFile(fname)
-"  call system("/home/makotia/bin/print.py " . a:fname)
-"  call delete(a:fname)
-"  return v:shell_error
-"endfunc
+set dir=~/.vim/swap/     "directory for swap files
 
 " Load the man page viewer plugin ----------------------------------------------
 runtime! ftplugin/man.vim
-
-" Configure ClearCase plugin ---------------------------------------------------
-if has("gui_running")
-  let g:ccaseNoComment = 1 " don't prompt for comments on clearcase commands
-  
-  " <F9>: checkout reserved
-  nmap <f9> :ctco<cr>
-  vmap <f9> <esc>:ctco<cr>i
-  
-  " <shift> + <F9>: checkout unreserved
-  nmap <s-f9> :ctcou<cr>
-  vmap <s-f9> <esc>:ctcou<cr>i
-endif
-

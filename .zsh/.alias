@@ -93,8 +93,6 @@ alias sockl='sockc -l'                        #listening sockets
 # @author makotia
 alias mc='/usr/bin/mc -u --colors normal=white,black' #visual shell
 
-alias rh='more /etc/redhat-release' #Print RedHat version
-
 alias archive='ant -f ~/etc/build-archive.xml'
 
 alias xld='xauth list ${DISPLAY//localhost/$(hostname)/unix}'

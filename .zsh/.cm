@@ -18,107 +18,6 @@
 autoload -U colors && colors
 
 #===============================================================================
-# Configure clearcase session
-#===============================================================================
-unset CC_TAG
-
-# This block will only execute if CLEARCASE_ROOT is defined (that is, if the
-# current session is a "clearcase" session).
-if (( ${+CLEARCASE_ROOT} )) {
-  # Define CC_TAG for insertion in prompt
-  export CC_TAG="%{${ALT_COLOR:=${fg[cyan]}}%}[$(basename $CLEARCASE_ROOT)]%{${reset_color}%} "
-  
-  # Change group (some CC stuff won't work otherwise)
-  [[ ${CC_GROUP:=irad} != "$(id -gn)" && ${SHLVL} -lt 10 ]] && exec newgrp ${CC_GROUP}
-  
-  # Change directory
-  [[ -d ${VOB_HOME:=/vobs} ]] && cd ${VOB_HOME}
-}
-
-alias   ct='cleartool'
-alias   sv='set_view.zsh'
-alias lsco='cleartool lsco -r -me -cview'
-
-_list_by_type() {
-  local ct_cmd="cleartool lstype -kind $1 -nos"
-  sort -u <(${=ct_cmd} -invob /vobs/borg101) <(${=ct_cmd} -invob /vobs/mission64)
-}
-
-list_branches() {
-  _list_by_type brtype
-}
-
-list_labels() {
-  _list_by_type lbtype
-}
-
-find_files_by_label() {
-  label=$1
-  shift
-  paths=("$@")
-  cleartool find ${paths:=-avobs} -version "lbtype(${label})" -print 2> /dev/null
-}
-
-find_files_by_branch() {
-  branch=$1
-  shift
-  paths=("$@")
-  cleartool find ${paths:=-avobs} -branch "brtype(${branch})" -print
-}
-
-print_branch_owner() {
-  for vob in borg101 mission64; printf "%10s: %10s\n" $vob $(ct lstype -fmt "%u" "brtype:$1@/vobs/${vob}" 2> /dev/null)
-}
-
-ci() {
-  if [[ $1 != <-> ]]; then
-    print -u 2 "\"$1\" doesn\'t look like a DR number"
-    return 1
-  fi
-  CQCC_AUTO_ASSOCIATE=$1 cleartool checkin -nc ${@[2,-1]}
-}
-
-cia() {
-  if [[ $1 != <-> ]]; then
-    print -u 2 "\"$1\" doesn\'t look like a DR number"
-    return 1
-  fi
-  ci $1 $(lsco -s)
-}
-
-cid() {
-  cleartool describe -fmt "$En: %On\n" "$@"
-}
-
-unco() {
-  cleartool unco -rm "$@"
-}
-
-co() {
-  cleartool co -nc "$@"
-}
-
-cdr() { #configure clearcase for DR
-  if [[ "$1" != <-> ]]; then
-    print -u 2 "\$1 must be a number (\"$1\" is not a number)"
-    return 1
-  fi
-  dr=$(printf "espdb%08d" $1)
-  
-  for vob in borg101 mission64; ct mkbrtype -nc ${dr}@/vobs/${vob}
-  
-  ct mkview -tag ${dr} -stgloc -auto 1> /dev/null
-  print "Created view \"${dr}\"."
-  
-  #TODO: once setcs.pl is un-borked, use it here
-  print "/net/ccview/ccstg/scripts/setcs.pl -p espn -b ${dr} -l latest"
-}
-
-xvt() {
-  LC_ALL=C =xlsvtree $*
-}
-
-#===============================================================================
 # Configure subversion session
 #===============================================================================
 alias ssc='svn_status_color -s acdimnrx!~'
@@ -127,7 +26,7 @@ alias ssc='svn_status_color -s acdimnrx!~'
 # @author makotia
 whichrev()  {
     re=$1
-    svn log $SVNBOA | grep -B50 $re | grep "$re\|^r[1-9]" | grep -B1 $re | awk '/^r[1-9]/ {print $1}'
+    svn log $SVN_REPO | grep -B50 $re | grep "$re\|^r[1-9]" | grep -B1 $re | awk '/^r[1-9]/ {print $1}'
 }
 
 # Search svn database for a particular DR, print the files that were checked in against it
