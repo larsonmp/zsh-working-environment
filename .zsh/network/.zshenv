@@ -41,9 +41,10 @@ network_colors=(
 
 host_colors=(
   squawkbox		${fg[blue]}
-  raspberry-pi-01	${fg[cyan]}
-  raspberry-pi-02	${fg[cyan]}
-  raspberry-pi-xbian	${fg[yellow]}
+  hoth			${fg[white]}
+  kashyyyk		${fg[cyan]}
+  dagobah		${fg[green]}
+  tatooine		${fg[yellow]}
   moxie			${fg[red]}
 )
 

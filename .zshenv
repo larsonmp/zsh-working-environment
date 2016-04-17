@@ -114,6 +114,8 @@ export ADDR="$(hostname -I)"
 export OS="$(uname -o)"
 export KERNEL="$(uname -r)"
 export GROUPS="$(groups)"
+export DISTRO="$(egrep -o '^\w*' /etc/issue)"
+[[ -r /etc/debian_version ]] && export DISTRO_VERSION="$(cat /etc/debian_version)"
 
 export XTFONT='-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1'
 

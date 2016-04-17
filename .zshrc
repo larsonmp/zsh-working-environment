@@ -56,7 +56,7 @@ autoload -U zmv
 # Configure the prompt
 #===============================================================================
 # Display a path prompt (with main colors)
-export PS1="${CC_TAG}%{${NETWORK_COLOR}%}%d%{${reset_color}%} %B>%b "
+export PS1="%{${HOST_COLOR}%}%m%{${reset_color}%}:${CC_TAG}%{${NETWORK_COLOR}%}%d%{${reset_color}%} %B>%b "
 
 # Display a secondary prompt (for for-loops, etc.)
 export PS2="%{${NETWORK_COLOR}%}[...]%{${reset_color}%} > "

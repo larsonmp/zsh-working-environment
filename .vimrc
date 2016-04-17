@@ -12,6 +12,9 @@ set number        "show line numbers
 set incsearch     "incremental searching
 set tabpagemax=25 "max tabs
 set autochdir
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
 
 " Set keyboard shortcuts -------------------------------------------------------
 if has("gui_running")
@@ -30,8 +33,7 @@ if has("gui_running")
 endif
 
 " Set font and color scheme ----------------------------------------------------
-colorscheme lucius
-LuciusDark
+colorscheme peachpuff
 set guifont=Inconsolata\ 14
 
 " Remove unneeded toolbar buttons ----------------------------------------------
