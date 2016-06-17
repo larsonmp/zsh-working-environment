@@ -42,8 +42,9 @@ network_colors=(
 host_colors=(
   squawkbox		${fg[blue]}
   hoth			${fg[white]}
-  kashyyyk		${fg[cyan]}
+  kashyyyk		${fg[green]}
   dagobah		${fg[green]}
+  bespin		${fg[cyan]}
   tatooine		${fg[yellow]}
   moxie			${fg[red]}
 )
