@@ -16,6 +16,8 @@ set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 
+syntax on
+
 " Set keyboard shortcuts -------------------------------------------------------
 if has("gui_running")
   nmap <c-t> :tabnew<cr>
