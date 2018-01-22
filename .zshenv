@@ -119,10 +119,6 @@ export DISTRO="$(egrep -o '^\w*' /etc/issue)"
 
 export XTFONT='-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1'
 
-# variables for external applications
-export GREP_OPTIONS='--color=auto' # make grep print in color by default
-#GREP_COLOR='1;32'
-
 # path for python library modules
 [[ -r ${PYTHONPATH:=~/lib/python} ]] && export PYTHONPATH
 

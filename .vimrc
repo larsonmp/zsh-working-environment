@@ -15,6 +15,7 @@ set autochdir
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
+set term=builtin_ansi
 
 syntax on
 
