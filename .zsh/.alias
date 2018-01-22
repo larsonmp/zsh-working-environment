@@ -31,7 +31,7 @@
 alias -g me=${USERNAME}
 
 if [[ -x /usr/bin/dircolors ]] {
-  eval "$(dircolors ${Z_HOME}/.dircolors)"
+  eval "$(dircolors --sh ${Z_HOME}/.dircolors)"
   alias   ls='ls   --color=auto' #List w/ colors
   alias  dir='dir  --color=auto' #List directories w/ colors
   alias vdir='vdir --color=auto' #List directories w/ colors

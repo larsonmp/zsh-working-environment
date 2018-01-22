@@ -127,12 +127,11 @@ show_general() {
 }
 
 ##
-# Display host information (address, name, uptime)
+# Display host information (address, name)
 #
 show_host() {
   print "${main_color}Host${reset_color}:        ${HOST}"
   print "${main_color}IP Address${reset_color}:  ${ADDR}"
-  print "${main_color}Uptime${reset_color}:      $(uptime | sed 's/.*up \(.*\),.*user.*$/\1/')"
 }
 
 ##
@@ -204,7 +203,6 @@ show_welcome() {
   print "${main_color}Welcome to ${reset_color}${alt_color}${HOST}${reset_color}"
   print "${main_color}Date${reset_color}:       $(date +'%Y-%m-%d %H:%M:%S')"
   print "${main_color}Platform${reset_color}:   ${OS} (${KERNEL}) on ${CPUTYPE}"
-  print "${main_color}Uptime${reset_color}:     $(uptime | sed 's/.*up \(.*\),.*user.*$/\1/')"
   print "${main_color}IP Address${reset_color}: ${ADDR}"
 }
 
