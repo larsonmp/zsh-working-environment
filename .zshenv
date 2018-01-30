@@ -132,7 +132,7 @@ export XTFONT='-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1'
 #export CSCOPE_DB=~/.cscope/cscope.db
 
 # java
-export JAVA_HOME=/usr/java/latest
+#export JAVA_HOME=/usr/java/latest
 
 # jms
 export ACTIVEMQ_HOME=~/programs/apache-activemq/default
