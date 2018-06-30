@@ -1,1 +1,0 @@
-ps -U ${USERNAME} --no-headers -o rss,vsz | awk '{rss+=$1; vsz+=$2} END{print rss,vsz}'

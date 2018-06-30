@@ -1,8 +1,0 @@
-while {true}; do
-  tput sc
-  timestamp=$(date "$@")
-  tput cup 0$(( $(tpu cols) - ${#timestamp} ))
-  tput rc
-  sleep 1
-done &
-

@@ -1,1 +1,0 @@
-time watch -n 1 "date -ud \"$(date +%s) seconds ago\" +%M:%S"

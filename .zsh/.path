@@ -24,13 +24,8 @@
 hash -d func=${Z_HOME}/functions
 
 user_paths=(
-  ${EPD_HOME}/bin
   ~/bin
-  ${ANT_HOME}/bin
   ${JAVA_HOME}/bin
-  ${MAVEN_HOME}/bin
-  ${DERBY_HOME}/bin
-  ${ACTIVEMQ_HOME}/bin
 )
 
 # Append arg ($1) to path if it isn't already in path

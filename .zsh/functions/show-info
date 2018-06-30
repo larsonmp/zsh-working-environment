@@ -105,8 +105,8 @@ show_all() {
 #
 show_date() {
   local dt="$(date +%s)"
-  local dt_lcl="$(date  -d @${dt} +'%Y-%m-%d %H:%M:%S%:z (%Z)')"
-  local dt_utc="$(date -ud @${dt} +'%Y-%m-%d %H:%M:%SZ      (%Z)')"
+  local dt_lcl="$(date -jf  %s ${dt} +'%Y-%m-%d %H:%M:%S%z (%Z)')"
+  local dt_utc="$(date -juf %s ${dt} +'%Y-%m-%d %H:%M:%SZ     (%Z)')"
   
   print "${main_color}Date${reset_color}:        ${dt_lcl}\n             ${dt_utc}"
 }
@@ -141,14 +141,14 @@ show_host() {
 # @env colorize enable color output (see ls)
 #
 show_path() {
-  local sed_cmd_1='s:[ ]+:\t:g'         #convert spaces to tabs
-  local sed_cmd_2='s/[[:blank:]]/    /' #convert first tab in line back to spaces
+  local sed_cmd_1='s:[[:space:]]+:	:g'   #convert spaces to tabs
+  local sed_cmd_2='s/@?[[:blank:]]/    /' #convert first tab in line back to spaces
   local sed_cmd_3='/->/ s/([^[:blank:]]+)[[:blank:]]+->[[:blank:]]+([^[:blank:]]+)/\1 -> \2/'
-  local color_arg="${colorize+--color=always}"
+  (( ${+colorize} )) && export CLICOLOR=1 CLICOLOR_FORCE=1
   
   (( ${+verbose} )) && print "${main_color}Path${reset_color}:"
   for entry in ${path}; do
-    print "$(ls -ld ${entry} ${color_arg} | sed -r ${sed_cmd_1} | cut -f1,3,9- | sed -r -e ${sed_cmd_2} -e ${sed_cmd_3} | tr -d '\n')"
+    print "$(ls -ld ${entry} | sed -E ${sed_cmd_1} | cut -f1,3,9- | sed -E -e ${sed_cmd_2} -e ${sed_cmd_3} | tr -d '\n')"
   done | nl -w4 -s"| "
 }
 
@@ -157,26 +157,19 @@ show_path() {
 #
 show_platform() {
   print "${main_color}Platform${reset_color}:    ${OS} (${KERNEL}) on ${CPUTYPE}"
-  print "${main_color}OS${reset_color}:          ${DISTRO} ${DISTRO_VERSION}"
-  print "${main_color}CPU${reset_color}:         $(cat /proc/cpuinfo | awk -F: '/^model.name/ {print $NF}' | sort -u | sed 's/^[[:space:]]//')"
+  print "${main_color}CPU${reset_color}:         $(sysctl -n machdep.cpu.brand_string)"
 }
 
 ##
 # Display version information for OS and various developer tools
 #
 show_version() {
-  print "${main_color}RedHat${reset_color}:      $(cat /etc/redhat-release | egrep -o '[0-9.]+')"
+  print "${main_color}OSX${reset_color}:         ${OS}"
   print "${main_color}zsh${reset_color}:         ${ZSH_VERSION}"
-  print "${main_color}GCC${reset_color}:         $(gcc --version | awk '/gcc/ {print $3}')"
-  print "${main_color}Java${reset_color}:        $(java -version |& awk '/java version/ {print $3}' | sed 's:"::g')"
+#  print "${main_color}Java${reset_color}:        $(java -version |& awk '/java version/ {print $3}' | sed 's:"::g')"
   print "${main_color}Python${reset_color}:      $(python -V |& awk '{print $2}')"
   print "${main_color}Ruby${reset_color}:        $(ruby -v |& awk '{print $2}')"
-  print "${main_color}Perl${reset_color}:        $(perl -v |& awk '/is perl/ {print $4}' | cut -c2-)"
-  print "${main_color}Ant${reset_color}:         $(ant -version |& awk '{print $4}')"
-  print "${main_color}gVim${reset_color}:        $(=gvim  --version | head -1 | awk '{print $5}')"
-  print "${main_color}emacs${reset_color}:       $(=emacs --version | head -1 | awk '{print $NF}')"
-  print "${main_color}Firefox${reset_color}:     $(firefox --version     | awk '{print $3}' | egrep -o '[0-9.]+')"
-  print "${main_color}Thunderbird${reset_color}: $(thunderbird --version | awk '{print $2}' | egrep -o '[0-9.]+')"
+  print "${main_color}Perl${reset_color}:        $(perl -v | sed -En 's:.*v([[:digit:].]+).*:\1:p')"
 }
 
 ##
@@ -202,7 +195,7 @@ show_user() {
 #
 show_welcome() {
   print "${main_color}Welcome to ${reset_color}${alt_color}${HOST}${reset_color}"
-  print "${main_color}Date${reset_color}:       $(date +'%Y-%m-%d %H:%M:%S')"
+  print "${main_color}Date${reset_color}:       $(date +'%Y-%m-%dT%H:%M:%S')"
   print "${main_color}Platform${reset_color}:   ${OS} (${KERNEL}) on ${CPUTYPE}"
   print "${main_color}Uptime${reset_color}:     $(uptime | sed 's/.*up \(.*\),.*user.*$/\1/')"
   print "${main_color}IP Address${reset_color}: ${ADDR}"
@@ -211,7 +204,7 @@ show_welcome() {
 ########################################################################################################################
 # VARIABLES, PROPERTIES, etc.
 
-categories=(all general host path platform stats user version welcome)
+categories=(all date general host path platform stats user version welcome)
 
 ########################################################################################################################
 # ARGUMENT HANDLING

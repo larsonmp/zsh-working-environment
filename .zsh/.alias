@@ -5,7 +5,7 @@
 #              Kotiaho, Markku P. (me, pi, +x. -x. 2hex, 2dec, mc)
 #              Bewley, Justin E. (-, --, ---)
 #              Reynolds, Rose (print_file, print_text)
-#DEPENDENCIES: None
+#DEPENDENCIES: ${Z_HOME}/.path
 #
 #VERSION HISTORY:
 #
@@ -30,13 +30,6 @@
 # @author makotia
 alias -g me=${USERNAME}
 
-if [[ -x /usr/bin/dircolors ]] {
-  eval "$(dircolors ${Z_HOME}/.dircolors)"
-  alias   ls='ls   --color=auto' #List w/ colors
-  alias  dir='dir  --color=auto' #List directories w/ colors
-  alias vdir='vdir --color=auto' #List directories w/ colors
-}
-
 alias  la='ls  -A'    #List all (include hidden files)
 alias lla='ls -lA'    #List all (include hidden files)
 alias  l.='ls -d .*'  #List hidden files
@@ -46,7 +39,7 @@ alias lsa='ls -lASh'  #List w/details, sorted by size (desc.)
 alias lsd='ls -lAShr' #List w/details, sorted by size (asc.)
 alias  lr='ls *(m0)'  #List recent (modified today) files
 
-alias perm='stat --format="%a %n" "$@"' #List w/ octal permissions
+alias perm='stat -f "%a %n" "$@"' #List w/ octal permissions
 
 alias p3='show-info -c path' #pretty print path -> ppp -> p^3 -> p3
 
@@ -56,8 +49,8 @@ alias vi='vim'      #Use VIM instead of VI
 
 which ls_to_octal &> /dev/null
 if [[ $? == 0 ]] {
-  alias  lo='ls -l  "$@" --color=always | ls_to_octal' #List w/ octal perm.
-  alias lao='ls -lA "$@" --color=always | ls_to_octal' #List all w/ octal perm.
+  alias  lo='ls -l  "$@" -G | ls_to_octal' #List w/ octal perm.
+  alias lao='ls -lA "$@" -G | ls_to_octal' #List all w/ octal perm.
 }
 
 # @author jubewle

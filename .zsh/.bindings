@@ -19,59 +19,12 @@
 #
 ################################################################################
 
-autoload zkbd
-
-##
-# find an appropriate zkbd file
-#
-# return 0 if file is found, 1 otherwise
-#
-get_zkbd_file() {
-  local -a files; files=("${COLORTERM:-${TERM}}-${VENDOR}-${OSTYPE}" "${COLORTERM:-${TERM}}-${DISPLAY}")
-  for file in $files; {
-    [[ -f ~/.zkbd/${file} ]] && printf '%s' ~/.zkbd/${file} && return 0
-  }
-  return 1
-}
-
-#ensure directory exists
-[[ ! -d ~/.zkbd ]] && mkdir ~/.zkbd
-
-#attempt to retrieve zkbd file
-keyfile=$(get_zkbd_file)
-rv=$?
-if [[ ${rv} -ne 0 ]] {
-  zkbd #this launches an interactive process
-  keyfile=$(get_zkbd_file)
-  rv=$?
-}
-
-#load zkbd file if one was found, give up otherwise
-if [[ ${rv} -eq 0 ]] {
-  source "${keyfile}"
-} else {
-  printf 'Failed to setup keys using zkbd.\n'
-}
-
-#clean up
-unfunction get_zkbd_file
-unset keyfile rv
-
 # configure key bindings
-[[ -n "${key[Home]}"   ]] && bindkey "${key[Home]}"   beginning-of-line
-[[ -n "${key[End]}"    ]] && bindkey "${key[End]}"    end-of-line
-[[ -n "${key[Insert]}" ]] && bindkey "${key[Insert]}" overwrite-mode
-[[ -n "${key[Delete]}" ]] && bindkey "${key[Delete]}" delete-char
-[[ -n "${key[Up]}"     ]] && bindkey "${key[Up]}"     up-line-or-history
-[[ -n "${key[Down]}"   ]] && bindkey "${key[Down]}"   down-line-or-history
-[[ -n "${key[Left]}"   ]] && bindkey "${key[Left]}"   backward-char
-[[ -n "${key[Right]}"  ]] && bindkey "${key[Right]}"  forward-char
-
 bindkey -r '' #unbind the default 'vi-backward-kill-word' to free up ^W
 
-bindkey '' debug-process
+bindkey '' beginning-of-line
 bindkey '' vi-backward-kill-word
-bindkey '' kill-word
+bindkey '' end-of-line
 bindkey '' expand-cmd-path
 bindkey '' kill-line
 bindkey '' push-line
@@ -81,20 +34,16 @@ bindkey '' reset-prompt
 
 bindkey -s '' 'show-info stats'
 
-bindkey '[1;2D' backward-word
+bindkey '[3~' delete-char                  #<delete>
 
 bindkey '[1;2D' backward-word              #<shift> + <left>
 bindkey '[1;2C' forward-word               #<shift> + <right>
-
 
 bindkey '[1;5C' copy-prev-shell-word       #<ctrl> + <right>
 
 bindkey '[2;5~' insert-last-command-output #<ctrl> + <insert>
 
 # reference ====================================================================
-#- <ctrl> + A  debug-process
-#-             launch gdb and attach to a suspended process
-#-
 #- <ctrl> + B  vi-backward-kill-word
 #-             kill the word behind the cursor
 #-

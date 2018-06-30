@@ -16,6 +16,9 @@ set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 
+" Set OSX options --------------------------------------------------------------
+set clipboard=unnamed
+
 syntax on
 
 " Set keyboard shortcuts -------------------------------------------------------
@@ -47,7 +50,6 @@ aunmenu ToolBar.FindHelp
 " Set syntax highlighting rules for non-standard file extensions ---------------
 au BufReadPost           *.jy   set syntax=python
 au BufReadPost           *.pyrc set syntax=python
-au BufReadPost .dircolors       set syntax=dircolors
 au BufReadPost .screenrc.*      set syntax=screen
 
 " zshrc support files

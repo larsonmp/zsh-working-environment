@@ -1,1 +1,0 @@
-=watch -n 1 ps -U $USERNAME -o pid,ppid,command --forest

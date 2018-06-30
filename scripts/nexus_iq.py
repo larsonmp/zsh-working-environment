@@ -30,9 +30,9 @@ def parse_artifacts(output):
 		if 'detailed report' in line:
 			logger.info('report: %s', url_pattern.match(line).groupdict().get('url'))
 
-
 def main(iq_config, debug, do_rebuild, do_dependency_insight):
 	app_id = iq_config['application']['id']
+	app_name = iq_config['application'].get('name')
 	targets = iq_config['application']['targets']
 	username = iq_config['nexus']['credentials']['username']
 	password = iq_config['nexus']['credentials']['password']
@@ -55,24 +55,25 @@ def main(iq_config, debug, do_rebuild, do_dependency_insight):
 	
 	if do_dependency_insight:
 		for artifact in parse_artifacts(out):
-			cmd = ['./gradlew', '--quiet', 'dependencyInsight', '--dependency', artifact.get('artifact_id'), '--configuration', 'compile']
+			logger.info('artifact: %s:%s:%s', artifact.get('group_id'), artifact.get('artifact_id'), artifact.get('version'))
+			task = 'dependencyInsight'
+			if app_name:
+				task = app_name + ':' + task
+			cmd = ['./gradlew', '--quiet', task, '--dependency', artifact.get('artifact_id'), '--configuration', 'compile']
 			pipe = Popen(cmd, stdout=PIPE)
 			out, err = pipe.communicate()
 			log_err(err)
-			logger.info('artifact: %s:%s:%s', artifact.get('group_id'), artifact.get('artifact_id'), artifact.get('version'))
 			for line in out.split('\n'):
-				logger.info(line)
+				logger.debug(line)
 	else:
 		for line in out.split('\n'):
 			logger.info(line)
-
 
 def log_err(err_stream):
 	if err_stream:
 		logger.error('=' * 80)
 		logger.error('\n' + err_stream)
 		logger.error('=' * 80)
-
 
 def extend(root, project):
 	for key in project:
