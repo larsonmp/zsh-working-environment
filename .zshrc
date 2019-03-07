@@ -37,11 +37,6 @@ for f in ${Z_HOME}/.{options,path,alias,functions,bindings,completion}; {
 }
 
 #===============================================================================
-# Configure configuration management settings (clearcase, subversion, etc.)
-#===============================================================================
-[[ -f ${Z_HOME}/.cm ]] && source ${Z_HOME}/.cm
-
-#===============================================================================
 # Load builtins, etc.
 #===============================================================================
 autoload -U colors && colors

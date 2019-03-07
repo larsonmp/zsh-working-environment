@@ -19,13 +19,15 @@
 #
 ################################################################################
 
-[[ -d ${ANT_HOME}  ]] && hash -d  ant=%{ANT_HOME}
-[[ -d ${JAVA_HOME} ]] && hash -d java=${JAVA_HOME}
+[[ -d ${ANT_HOME}   ]] && hash -d   ant=${ANT_HOME}
+[[ -d ${JAVA_HOME}  ]] && hash -d  java=${JAVA_HOME}
+[[ -d ${MONGO_HOME} ]] && hash -d mongo=${MONGO_HOME}
 hash -d func=${Z_HOME}/functions
 
 user_paths=(
   ~/bin
   ${JAVA_HOME}/bin
+  ${MONGO_HOME}/bin
 )
 
 # Append arg ($1) to path if it isn't already in path

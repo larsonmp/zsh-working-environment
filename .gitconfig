@@ -1,6 +1,6 @@
 [user]
     name = Micah Larson
-    email = larson.micah@gmail.com
+    email = micah.larson@pb.com
 [core]
     editor = vim
 [color]
@@ -12,6 +12,23 @@
     ls = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
     ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
     lt = log --oneline --decorate --all
+    lg = log --oneline --decorate --all --graph
+    up = !git pull && git fetch -p
     head = "!git ls -10"
+    branch-authors = "!git for-each-ref \
+        --format='%(color:cyan)%(committerdate:iso8601)%(color:reset) %(color:yellow)%(align:18,right)%(authorname)%(end)%(color:reset) %(color:magenta)%(refname:short)%(color:reset)' \
+        --sort committerdate refs/remotes/origin"
+    activity-by-file = !git log --name-status --no-merges | egrep '^[MAD]\\b' | cut -f2- | sort | uniq -c | sort -nrk1
+    activity-by-author = !git log --name-only --no-merges | egrep '^Author' | cut -c9- | sort | uniq -c | sort -nrk1
 [push]
 	default = simple
+[diff]
+	tool = bc3
+[diff "tool"]
+	trustExitCode = true
+[merge]
+	tool = bc3
+[merge "tool"]
+	trustExitCode = true
+[difftool]
+	prompt = false

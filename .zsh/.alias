@@ -78,6 +78,7 @@ alias print_text 'enscript -d $PRINTER -f Times-Roman10 --language PostScript \!
 for exe in /sbin/{arp,fdisk,fuser,ifconfig,pidof,route} /usr/sbin/{alternatives,apachectl,chroot,groupadd,groupdel,httpd,lsof,nstat,ss}; {
   alias $(basename ${exe})=${exe}
 }
+alias mysql=/usr/local/mysql/bin/mysql
 
 # active ports
 alias sockc='netstat  -eeptu --numeric-ports' #connected sockets

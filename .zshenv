@@ -68,12 +68,13 @@ export WATCHFMT="%S%B[%D %t]%b%s ${fg[yellow]}%n${reset_color}%(M:@${fg[yellow]}
 # OSX variables
 #===============================================================================
 export CLICOLOR=1
+export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
 #===============================================================================
 # AWS variables
 #===============================================================================
-export AWS_ACCESS_KEY_ID=AKIAJQM72MY2DUY5Y5JQ
-export AWS_SECRET_ACCESS_KEY=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
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
 
 #===============================================================================
 # File sets (configuration files grouped logically)
@@ -101,8 +102,6 @@ dot_files=(
   ~/.vimrc
   ~/.gdbinit
   ${PYTHONSTARTUP}
-  ${Z_HOME}/.cm
-  ~/.Xresources
 )
 
 #===============================================================================
@@ -138,14 +137,13 @@ export GREP_OPTIONS='--color=auto' # make grep print in color by default
 # python startup file
 [[ -r ${PYTHONSTARTUP:=~/.pyrc} ]] && export PYTHONSTARTUP
 
-# Enthought Python Distribution
-#export EPD_HOME=/opt/epd
-
 #CScope
 #export CSCOPE_DB=~/.cscope/cscope.db
 
+export WHITECASTLE_HOME=~/workspace/whitecastle
+
 # java
-#export JAVA_HOME=/usr/java/latest
+export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 # ant
 export ANT_HOME=/usr/share/ant
@@ -157,6 +155,9 @@ export ANT_OPTS="-Dant.logger.defaults=${ANT_LOGGER_CFG}"
 # maven
 export MAVEN_HOME=/opt/apache/maven-3.0.4
 export MAVEN_OPTS="-Xms256m -Xmx512m"
+
+# mongodb
+export MONGO_HOME=~/Applications/mongodb/latest
 
 # postgresql
 export PGDATA=/var/tmp/larsonmp/pgsql/data
